@@ -50,7 +50,7 @@ const stripSql = (text) => {
 }
 
 const normalizeResultPrompt = (originQuery , queryResponse) => {
-    return `This query result (${queryResponse}) was returned as a response to the following query: ${originQuery}. Transform the response into plain English. Your response should be returned in object format, with key 'preamble' associated with original query context. Key 'resultData' contains value of the actual data. Result data will be mapped over on the front end of the application.`
+    return `This query result (${JSON.stringify(queryResponse)}) was returned as a response to the following query: ${originQuery}. Transform the response into plain English. Your response should be returned in object format, with key 'preamble' associated with original query context. Key 'resultData' contains value of the actual data. Result data will be mapped over on the front end of the application.`
 }
 
 const requestNormalized = async(originQuery , queryResponse) => {
