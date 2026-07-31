@@ -1,5 +1,7 @@
 const {Pool} = require('pg')
 
+console.log('password type:', typeof process.env.ROUTEBASE_DB_PASSWORD, JSON.stringify(process.env.ROUTEBASE_DB_PASSWORD))
+
 const pools = {
     routebase: new Pool({
     host: process.env.ROUTEBASE_DB_HOST,
