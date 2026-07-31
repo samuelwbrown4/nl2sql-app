@@ -49,4 +49,33 @@ const stripSql = (text) => {
     return modifiedText
 }
 
-module.exports = { buildQuery }
+const normalizeResultPrompt = (originQuery , queryResponse) => {
+    return `This query result (${queryResponse}) was returned as a response to the following query: ${originQuery}. Transform the response into plain English. Your response should be returned in object format, with key 'preamble' associated with original query context. Key 'resultData' contains value of the actual data. Result data will be mapped over on the front end of the application.`
+}
+
+const requestNormalized = async(originQuery , queryResponse) => {
+    try{
+        let prompt = normalizeResultPrompt(originQuery , queryResponse);
+
+        let response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.ANTHROPIC_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+                model: 'claude-haiku-4-5-20251001',
+                max_tokens: 1000,
+                messages: [
+                    { role: 'user', content: prompt }
+                ]
+            })
+        })
+    }catch(error){
+        console.log(error)
+        throw error
+    }
+}
+
+module.exports = { buildQuery , requestNormalized }
