@@ -55,6 +55,8 @@ const normalizeResultPrompt = (originQuery , queryResponse) => {
 
 const requestNormalized = async(originQuery , queryResponse) => {
     try{
+        console.log('>>>ORIGIN QUERY' , originQuery)
+        console.log('>>>QUERY RESPONSE' , queryResponse)
         let prompt = normalizeResultPrompt(originQuery , queryResponse);
 
         let response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -75,7 +77,7 @@ const requestNormalized = async(originQuery , queryResponse) => {
 
         let result = await response.json()
 
-        return result
+        return result.content[0].text
     }catch(error){
         console.log(error)
         throw error
