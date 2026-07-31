@@ -72,6 +72,10 @@ const requestNormalized = async(originQuery , queryResponse) => {
                 ]
             })
         })
+
+        let result = await response.json()
+
+        return result
     }catch(error){
         console.log(error)
         throw error
