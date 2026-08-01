@@ -77,7 +77,7 @@ const requestNormalized = async(originQuery , queryResponse) => {
 
         let result = await response.json()
 
-        return result.content[0].text
+        return result.content[0].text.replace('# Summary\n\n' , '')
     }catch(error){
         console.log(error)
         throw error
