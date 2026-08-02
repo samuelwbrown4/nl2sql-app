@@ -1,272 +1,331 @@
 {
-  "routebase": {
-    "enums": {
-      "role_enum": ["admin", "user"],
-      "order_status_enum": ["unplanned", "planned", "in_transit", "delivered", "cancelled"],
-      "shipment_status_enum": ["built", "pending_carrier", "planned", "tendered", "routed", "in_transit", "delivered", "cancelled"],
-      "shipment_events_type_enum": ["tender_accepted", "tender_rejected", "retendered", "spot_reroute", "routed", "picked_up", "in_transit", "delivered", "comment"],
-      "shipment_type_enum": ["spot", "contract"],
-      "bid_status_enum": ["active", "expired", "accepted", "rejected"],
-      "contract_status_enum": ["pending", "active", "expired", "rejected", "terminated"],
-      "direction_enum": ["inbound", "outbound"]
-    },
-    "companies": {
-      "columns": {
-        "id": "uuid",
-        "name": "varchar",
-        "address": "varchar"
-      }
-    },
-    "carriers": {
-      "columns": {
-        "id": "uuid",
-        "name": "varchar",
-        "scac": "varchar",
-        "address": "varchar"
-      }
-    },
-    "customers": {
-      "columns": {
-        "id": "uuid",
-        "company_id": "uuid",
-        "name": "varchar",
-        "address": "varchar",
-        "city": "varchar",
-        "state": "varchar",
-        "zip_code": "varchar",
-        "country": "varchar"
-      },
-      "foreign_keys": {
-        "company_id": "companies.id"
-      }
-    },
-    "suppliers": {
-      "columns": {
-        "id": "uuid",
-        "company_id": "uuid",
-        "name": "varchar",
-        "address": "varchar",
-        "city": "varchar",
-        "state": "varchar",
-        "zip_code": "varchar",
-        "country": "varchar",
-        "latitude": "decimal",
-        "longitude": "decimal"
-      },
-      "foreign_keys": {
-        "company_id": "companies.id"
-      }
-    },
-    "customer_locations": {
-      "columns": {
-        "id": "uuid",
-        "customer_id": "uuid",
-        "name": "varchar",
-        "address": "varchar",
-        "city": "varchar",
-        "state": "varchar",
-        "zip_code": "varchar",
-        "country": "varchar",
-        "latitude": "decimal",
-        "longitude": "decimal"
-      },
-      "foreign_keys": {
-        "customer_id": "customers.id"
-      }
-    },
-    "shipper_locations": {
-      "columns": {
-        "id": "uuid",
-        "company_id": "uuid",
-        "erp_id": "varchar",
-        "name": "varchar",
-        "address": "varchar",
-        "city": "varchar",
-        "state": "varchar",
-        "zip_code": "varchar",
-        "country": "varchar",
-        "latitude": "decimal",
-        "longitude": "decimal"
-      },
-      "foreign_keys": {
-        "company_id": "companies.id"
-      }
-    },
-    "shipper_users": {
-      "columns": {
-        "id": "uuid",
-        "location_id": "uuid",
-        "first_name": "varchar",
-        "last_name": "varchar",
-        "role": "role_enum",
-        "newUser": "boolean"
-      },
-      "excluded_columns": ["email", "phone_number", "password_hash", "erp_id"],
-      "foreign_keys": {
-        "location_id": "shipper_locations.id"
-      }
-    },
-    "carrier_users": {
-      "columns": {
-        "id": "uuid",
-        "carrier_id": "uuid",
-        "first_name": "varchar",
-        "last_name": "varchar",
-        "role": "role_enum",
-        "newUser": "boolean"
-      },
-      "excluded_columns": ["email", "phone_number", "password_hash"],
-      "foreign_keys": {
-        "carrier_id": "carriers.id"
-      }
-    },
-    "equipment_types": {
-      "columns": {
-        "id": "uuid",
-        "name": "varchar",
-        "max_weight": "decimal",
-        "mode": "varchar"
-      }
-    },
-    "shipments": {
-      "columns": {
-        "id": "uuid",
-        "company_id": "uuid",
-        "direction_category": "direction_enum",
-        "shipment_number": "varchar",
-        "shipment_type": "shipment_type_enum",
-        "bid_deadline": "timestamp",
-        "origin_id": "uuid",
-        "destination_id": "uuid",
-        "carrier_id": "uuid",
-        "equipment_type_id": "uuid",
-        "status": "shipment_status_enum",
-        "total_weight": "decimal",
-        "created_at": "timestamp",
-        "requested_pickup_date": "date",
-        "requested_delivery_date": "date",
-        "actual_pickup_date": "date",
-        "actual_delivery_date": "date",
-        "distance": "decimal",
-        "rate": "decimal",
-        "planned_by_user_id": "uuid",
-        "transit_start_time": "timestamp",
-        "route_time_seconds": "decimal",
-        "near_destination": "boolean"
-      },
-      "excluded_columns": ["route_geometry", "current_position"],
-      "foreign_keys": {
-        "company_id": "companies.id",
-        "carrier_id": "carriers.id",
-        "equipment_type_id": "equipment_types.id",
-        "planned_by_user_id": "shipper_users.id"
-      },
-      "conditions" : {
-        "origin_id" : "determined by direction category. outbound is shipper_locations.id, inbound is suppliers.id",
-        "destination_id" : "determined by direction category. outbound is customer_locations.id, inbound is shipper_locations.id"
-      }
-    },
-    "spot_bids": {
-      "columns": {
-        "id": "uuid",
-        "shipment_id": "uuid",
-        "carrier_id": "uuid",
-        "rate": "decimal",
-        "created_at": "timestamp",
-        "status": "bid_status_enum"
-      },
-      "foreign_keys": {
-        "shipment_id": "shipments.id",
-        "carrier_id": "carriers.id"
-      }
-    },
-    "orders": {
-      "columns": {
-        "id": "uuid",
-        "company_id": "uuid",
-        "direction_category": "direction_enum",
-        "customer_id": "uuid",
-        "supplier_id": "uuid",
-        "origin_id": "uuid",
-        "destination_id": "uuid",
-        "order_number": "varchar",
-        "customer_po_number": "varchar",
-        "created_at": "timestamp",
-        "requested_ship_date": "date",
-        "order_status": "order_status_enum",
-        "weight": "decimal",
-        "synced": "boolean"
-      },
-      "excluded_columns": ["order_line_items"],
-      "foreign_keys": {
-        "company_id": "companies.id",
-        "customer_id": "customers.id",
-        "supplier_id": "suppliers.id"
-      }
-    },
-    "shipment_events": {
-      "columns": {
-        "id": "uuid",
-        "shipment_id": "uuid",
-        "event_type": "shipment_events_type_enum",
-        "event_timestamp": "timestamp",
-        "notes": "text",
-        "user_id": "uuid"
-      },
-      "foreign_keys": {
-        "shipment_id": "shipments.id",
-        "user_id": "carrier_users.id"
-      }
-    },
-    "shipment_orders": {
-      "columns": {
-        "shipment_id": "uuid",
-        "order_id": "uuid"
-      },
-      "foreign_keys": {
-        "shipment_id": "shipments.id",
-        "order_id": "orders.id"
-      }
-    },
-    "rate_packages": {
-      "columns": {
-        "id": "uuid",
-        "carrier_id": "uuid",
-        "name": "varchar"
-      },
-      "foreign_keys": {
-        "carrier_id": "carriers.id"
-      }
-    },
-    "rates": {
-      "columns": {
-        "id": "uuid",
-        "package_id": "uuid",
-        "min_distance": "decimal",
-        "max_distance": "decimal",
-        "flat_rate": "decimal",
-        "per_mile_rate": "decimal",
-        "fuel_surcharge_percentage": "decimal"
-      },
-      "foreign_keys": {
-        "package_id": "rate_packages.id"
-      }
-    },
-    "contracts": {
-      "columns": {
-        "id": "uuid",
-        "company_id": "uuid",
-        "carrier_id": "uuid",
-        "package_id": "uuid",
-        "start_date": "date",
-        "end_date": "date",
-        "contract_status": "contract_status_enum"
-      },
-      "foreign_keys": {
-        "company_id": "companies.id",
-        "carrier_id": "carriers.id",
-        "package_id": "rate_packages.id"
-      }
+    "routebase": {
+        "enums": {
+            "role_enum": [
+                "admin",
+                "user"
+            ],
+            "order_status_enum": [
+                "unplanned",
+                "planned",
+                "in_transit",
+                "delivered",
+                "cancelled"
+            ],
+            "shipment_status_enum": [
+                "built",
+                "pending_carrier",
+                "planned",
+                "tendered",
+                "routed",
+                "in_transit",
+                "delivered",
+                "cancelled"
+            ],
+            "shipment_events_type_enum": [
+                "tender_accepted",
+                "tender_rejected",
+                "retendered",
+                "spot_reroute",
+                "routed",
+                "picked_up",
+                "in_transit",
+                "delivered",
+                "comment"
+            ],
+            "shipment_type_enum": [
+                "spot",
+                "contract"
+            ],
+            "bid_status_enum": [
+                "active",
+                "expired",
+                "accepted",
+                "rejected"
+            ],
+            "contract_status_enum": [
+                "pending",
+                "active",
+                "expired",
+                "rejected",
+                "terminated"
+            ],
+            "direction_enum": [
+                "inbound",
+                "outbound"
+            ]
+        },
+        "companies": {
+            "columns": {
+                "id": "uuid",
+                "name": "varchar",
+                "address": "varchar"
+            }
+        },
+        "carriers": {
+            "columns": {
+                "id": "uuid",
+                "name": "varchar",
+                "scac": "varchar",
+                "address": "varchar"
+            }
+        },
+        "customers": {
+            "columns": {
+                "id": "uuid",
+                "company_id": "uuid",
+                "name": "varchar",
+                "address": "varchar",
+                "city": "varchar",
+                "state": "varchar",
+                "zip_code": "varchar",
+                "country": "varchar"
+            },
+            "foreign_keys": {
+                "company_id": "companies.id"
+            }
+        },
+        "suppliers": {
+            "columns": {
+                "id": "uuid",
+                "company_id": "uuid",
+                "name": "varchar",
+                "address": "varchar",
+                "city": "varchar",
+                "state": "varchar",
+                "zip_code": "varchar",
+                "country": "varchar",
+                "latitude": "decimal",
+                "longitude": "decimal"
+            },
+            "foreign_keys": {
+                "company_id": "companies.id"
+            }
+        },
+        "customer_locations": {
+            "columns": {
+                "id": "uuid",
+                "customer_id": "uuid",
+                "name": "varchar",
+                "address": "varchar",
+                "city": "varchar",
+                "state": "varchar",
+                "zip_code": "varchar",
+                "country": "varchar",
+                "latitude": "decimal",
+                "longitude": "decimal"
+            },
+            "foreign_keys": {
+                "customer_id": "customers.id"
+            }
+        },
+        "shipper_locations": {
+            "columns": {
+                "id": "uuid",
+                "company_id": "uuid",
+                "erp_id": "varchar",
+                "name": "varchar",
+                "address": "varchar",
+                "city": "varchar",
+                "state": "varchar",
+                "zip_code": "varchar",
+                "country": "varchar",
+                "latitude": "decimal",
+                "longitude": "decimal"
+            },
+            "foreign_keys": {
+                "company_id": "companies.id"
+            }
+        },
+        "shipper_users": {
+            "columns": {
+                "id": "uuid",
+                "location_id": "uuid",
+                "first_name": "varchar",
+                "last_name": "varchar",
+                "role": "role_enum",
+                "newUser": "boolean"
+            },
+            "excluded_columns": [
+                "email",
+                "phone_number",
+                "password_hash",
+                "erp_id"
+            ],
+            "foreign_keys": {
+                "location_id": "shipper_locations.id"
+            }
+        },
+        "carrier_users": {
+            "columns": {
+                "id": "uuid",
+                "carrier_id": "uuid",
+                "first_name": "varchar",
+                "last_name": "varchar",
+                "role": "role_enum",
+                "newUser": "boolean"
+            },
+            "excluded_columns": [
+                "email",
+                "phone_number",
+                "password_hash"
+            ],
+            "foreign_keys": {
+                "carrier_id": "carriers.id"
+            }
+        },
+        "equipment_types": {
+            "columns": {
+                "id": "uuid",
+                "name": "varchar",
+                "max_weight": "decimal",
+                "mode": "varchar"
+            }
+        },
+        "shipments": {
+            "columns": {
+                "id": "uuid",
+                "company_id": "uuid",
+                "direction_category": "direction_enum",
+                "shipment_number": "varchar",
+                "shipment_type": "shipment_type_enum",
+                "bid_deadline": "timestamp",
+                "origin_id": "uuid",
+                "destination_id": "uuid",
+                "carrier_id": "uuid",
+                "equipment_type_id": "uuid",
+                "status": "shipment_status_enum",
+                "total_weight": "decimal",
+                "created_at": "timestamp",
+                "requested_pickup_date": "date",
+                "requested_delivery_date": "date",
+                "actual_pickup_date": "date",
+                "actual_delivery_date": "date",
+                "distance": "decimal",
+                "rate": "decimal",
+                "planned_by_user_id": "uuid",
+                "transit_start_time": "timestamp",
+                "route_time_seconds": "decimal",
+                "near_destination": "boolean"
+            },
+            "excluded_columns": [
+                "route_geometry",
+                "current_position"
+            ],
+            "foreign_keys": {
+                "company_id": "companies.id",
+                "carrier_id": "carriers.id",
+                "equipment_type_id": "equipment_types.id",
+                "planned_by_user_id": "shipper_users.id"
+            },
+            "conditions": {
+                "origin_id": "IF direction_category = 'outbound' THEN join shipper_locations.id. IF direction_category = 'inbound' THEN join suppliers.id.",
+                "destination_id": "IF direction_category = 'outbound' THEN join customer_locations.id. IF direction_category = 'inbound' THEN join shipper_locations.id."
+            }
+        },
+        "spot_bids": {
+            "columns": {
+                "id": "uuid",
+                "shipment_id": "uuid",
+                "carrier_id": "uuid",
+                "rate": "decimal",
+                "created_at": "timestamp",
+                "status": "bid_status_enum"
+            },
+            "foreign_keys": {
+                "shipment_id": "shipments.id",
+                "carrier_id": "carriers.id"
+            }
+        },
+        "orders": {
+            "columns": {
+                "id": "uuid",
+                "company_id": "uuid",
+                "direction_category": "direction_enum",
+                "customer_id": "uuid",
+                "supplier_id": "uuid",
+                "origin_id": "uuid",
+                "destination_id": "uuid",
+                "order_number": "varchar",
+                "customer_po_number": "varchar",
+                "created_at": "timestamp",
+                "requested_ship_date": "date",
+                "order_status": "order_status_enum",
+                "weight": "decimal",
+                "synced": "boolean"
+            },
+            "excluded_columns": [
+                "order_line_items"
+            ],
+            "foreign_keys": {
+                "company_id": "companies.id",
+                "customer_id": "customers.id",
+                "supplier_id": "suppliers.id"
+            }
+        },
+        "shipment_events": {
+            "columns": {
+                "id": "uuid",
+                "shipment_id": "uuid",
+                "event_type": "shipment_events_type_enum",
+                "event_timestamp": "timestamp",
+                "notes": "text",
+                "user_id": "uuid"
+            },
+            "foreign_keys": {
+                "shipment_id": "shipments.id",
+                "user_id": "carrier_users.id"
+            }
+        },
+        "shipment_orders": {
+            "columns": {
+                "shipment_id": "uuid",
+                "order_id": "uuid"
+            },
+            "foreign_keys": {
+                "shipment_id": "shipments.id",
+                "order_id": "orders.id"
+            }
+        },
+        "rate_packages": {
+            "columns": {
+                "id": "uuid",
+                "carrier_id": "uuid",
+                "name": "varchar"
+            },
+            "foreign_keys": {
+                "carrier_id": "carriers.id"
+            }
+        },
+        "rates": {
+            "columns": {
+                "id": "uuid",
+                "package_id": "uuid",
+                "min_distance": "decimal",
+                "max_distance": "decimal",
+                "flat_rate": "decimal",
+                "per_mile_rate": "decimal",
+                "fuel_surcharge_percentage": "decimal"
+            },
+            "foreign_keys": {
+                "package_id": "rate_packages.id"
+            }
+        },
+        "contracts": {
+            "columns": {
+                "id": "uuid",
+                "company_id": "uuid",
+                "carrier_id": "uuid",
+                "package_id": "uuid",
+                "start_date": "date",
+                "end_date": "date",
+                "contract_status": "contract_status_enum"
+            },
+            "foreign_keys": {
+                "company_id": "companies.id",
+                "carrier_id": "carriers.id",
+                "package_id": "rate_packages.id"
+            }
+        }
     }
-  }
 }

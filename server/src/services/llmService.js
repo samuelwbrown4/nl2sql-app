@@ -19,7 +19,7 @@ const buildQuery = async (source, query) => {
         })
 
         let result = await response.json()
-        console.log(result)
+        console.log('>>>SQL RESULT' , result)
 
         let clarificationNeeded = result.content[0].text.includes('CLARIFICATION_NEEDED') 
         let text = clarificationNeeded ? result.content[0].text.split('CLARIFICATION_NEEDED:', 2)[1] : stripSql(result.content[0].text)
