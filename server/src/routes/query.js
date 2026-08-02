@@ -9,11 +9,11 @@ router.post('/query' , async(req , res) => {
     try{
         const {source , query} = req.body
         
-        if(!config[source]){
+        if(!config[source.toLowerCase()]){
             return res.status(400).json({'Error' : 'Invalid source'})
         }
 
-        const answer = await buildQuery(config[source] , query)
+        const answer = await buildQuery(config[source.toLowerCase()] , query)
 
         if(answer.clarification_needed){
             return res.status(200).json(answer.message)
