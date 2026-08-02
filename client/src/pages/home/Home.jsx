@@ -10,7 +10,7 @@ function Home() {
 
     const API_URL = import.meta.env.VITE_API_URL
 
-    async function submitQuery(source , queryInput){
+    async function submitQuery(){
         if(source === '' || queryInput === ''){
             return alert('Need to select a data source and submit a query')
         }
@@ -27,6 +27,8 @@ function Home() {
             })
 
             let result = await response.json()
+
+            setAnswer(result)
         }catch(error){
             console.log(error)
         }
@@ -43,7 +45,7 @@ function Home() {
             </div>
             <div className={styles.inputDiv}>
                 
-                <form>
+                <form >
                     <div style={{ display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center', gap: '1rem' }}>
                         <div style={{ width: '25%' }}>
                             <Select 
@@ -60,20 +62,20 @@ function Home() {
                                     } 
                                 }} 
                                 size='xl' 
-                                data={['Routebase (TMS)']} 
+                                data={['routebase']} 
                                 value={source} 
                                 onChange={(value)=>setSource(value)} 
                                 w={230} 
                                 placeholder="Select Source" />
                         </div>
                         <div style={{ width: '75%' }}>
-                            <Input size='xl' styles={{ input: { width: '100%', backgroundColor: '#333', borderColor: 'white', color: 'white', borderRadius: '30px' }, wrapper: { width: '100%' } }} value={queryInput} onChange={(e) => setQueryInput(e.target.value)} placeholder={'Ask away...'} />
+                            <Input size='xl' styles={{ input: { width: '100%', backgroundColor: '#333', borderColor: 'white', color: 'white', borderRadius: '30px' }, wrapper: { width: '100%' } }} value={queryInput} onChange={(e) => setQueryInput(e.target.value)} placeholder={'Ask away...'} onKeyDown={(e) => { if (e.key === 'Enter') submitQuery() }} />
                         </div>
                     </div>
                 </form>
             </div>
             <div style={{flex: 1}}>
-                <h1>*results here*</h1>
+                <p style={{color: 'white'}}>{answer}</p>
             </div>
         </div>
     )

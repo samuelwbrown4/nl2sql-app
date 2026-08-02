@@ -157,11 +157,13 @@
       "excluded_columns": ["route_geometry", "current_position"],
       "foreign_keys": {
         "company_id": "companies.id",
-        "origin_id": "shipper_locations.id",
-        "destination_id": "shipper_locations.id",
         "carrier_id": "carriers.id",
         "equipment_type_id": "equipment_types.id",
         "planned_by_user_id": "shipper_users.id"
+      },
+      "conditions" : {
+        "origin_id" : "determined by direction category. outbound is shipper_locations.id, inbound is suppliers.id",
+        "destination_id" : "determined by direction category. outbound is customer_locations.id, inbound is shipper_locations.id"
       }
     },
     "spot_bids": {

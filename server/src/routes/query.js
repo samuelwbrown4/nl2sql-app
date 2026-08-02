@@ -19,7 +19,7 @@ router.post('/query' , async(req , res) => {
             return res.status(200).json(answer.message)
         }else{
             console.log('LOG PRE QUERY EXECUTION')
-            let sqlAnswer = await executeQuery(source , answer.message)
+            let sqlAnswer = await executeQuery(source.toLowerCase() , answer.message)
 
             if(sqlAnswer.length >=10){
                 return res.status(200).json(sqlAnswer)
