@@ -12,6 +12,7 @@ const buildQuery = async (source, query) => {
             body: JSON.stringify({
                 model: 'claude-haiku-4-5-20251001',
                 max_tokens: 1000,
+                temperature: 0,
                 messages: [
                     { role: 'user', content: prompt }
                 ]
@@ -40,7 +41,7 @@ const buildQuery = async (source, query) => {
 }
 
 const buildPrompt = (source, query) => {
-    return `Take the following schema and query and return raw SQL that would execute the query. Return only SELECT statements, return only raw SQL, while paying attention to exact enum values, with no preamble or leading or trailing text. Be mindful of any conditions expressed in a table to determine proper SQL and do not use lazy aliases. Be intentional and descriptive in your aliasing of tables. When a question asks for human-readable information (such as names, addresses, or statuses) that requires joining to a related table via a foreign key, perform that join by default rather than asking for clarification or returning raw IDs. Only ask for clarification when the question is genuinely ambiguous about what data is being requested, not when it simply requires a join or conditional logic to resolve. If the query is ambiguous, return a response fitting the format 'CLARIFICATION_NEEDED: <a short question asking the user what they meant>. SCHEMA: ${JSON.stringify(source)} , QUERY: ${query}`
+    return `Take the following schema and query and return raw SQL that would execute the query. Return only SELECT statements, return only raw SQL, while paying attention to exact enum values, with no preamble or leading or trailing text. Be mindful of any conditions expressed in a table to determine proper SQL and do not use lazy aliases. Be intentional and descriptive in your aliasing of tables. When a question asks for human-readable information (such as names, addresses, or statuses), you MUST join to the relevant table and return the resolved value — never return a raw foreign key ID in place of the readable value it points to. Only ask for clarification when the question is genuinely ambiguous about what data is being requested, not when it simply requires a join or conditional logic to resolve. If the query is ambiguous, return a response fitting the format 'CLARIFICATION_NEEDED: <a short question asking the user what they meant>. SCHEMA: ${JSON.stringify(source)} , QUERY: ${query}`
 }
 
 const stripSql = (text) => {
