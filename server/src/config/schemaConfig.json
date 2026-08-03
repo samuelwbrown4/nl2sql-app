@@ -221,7 +221,8 @@
             "conditions": {
                 "origin_id": "IF direction_category = 'outbound' THEN join shipper_locations.id. IF direction_category = 'inbound' THEN join suppliers.id.",
                 "destination_id": "IF direction_category = 'outbound' THEN join customer_locations.id. IF direction_category = 'inbound' THEN join shipper_locations.id."
-            }
+            },
+              "known_pitfalls": "A common mistake when joining origin_id/destination_id conditionally is applying the direction_category condition to the wrong branch — e.g. joining shipper_locations with 'AND direction_category = inbound' when it should be 'outbound'. Double-check that each JOIN's direction_category condition matches the mapping stated in 'conditions' above before finalizing."
         },
         "spot_bids": {
             "columns": {
