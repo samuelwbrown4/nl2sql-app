@@ -77,7 +77,7 @@ function Home() {
             <div style={{flex: 1}}>
                 <p style={{color: 'white'}}>{answer.intro}</p>
                 {answer.bullets && 
-                    <ul>
+                    <ul style={{color: 'white'}}>
                         {answer.bullets.map(bullet => 
                             <li>{bullet}</li>
                         )}
