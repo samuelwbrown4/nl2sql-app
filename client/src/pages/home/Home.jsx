@@ -75,7 +75,14 @@ function Home() {
                 </form>
             </div>
             <div style={{flex: 1}}>
-                <p style={{color: 'white'}}>{answer}</p>
+                <p style={{color: 'white'}}>{answer.intro}</p>
+                {answer.bullets && 
+                    <ul>
+                        {answer.bullets.map(bullet => 
+                            <li>{bullet}</li>
+                        )}
+                    </ul>
+                }
             </div>
         </div>
     )

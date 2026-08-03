@@ -77,7 +77,7 @@ const requestNormalized = async(originQuery , queryResponse) => {
 
         let result = await response.json()
 
-        return JSON.parse(result.content[0].text.replace('```json ' , '').replace)('```' , '')
+        return JSON.parse(result.content[0].text.replace('```json ' , '').replace('```' , ''))
     }catch(error){
         console.log(error)
         throw error
