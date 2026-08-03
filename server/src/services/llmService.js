@@ -49,7 +49,7 @@ const stripSql = (text) => {
 }
 
 const normalizeResultPrompt = (originQuery , queryResponse) => {
-    return `This query result (${JSON.stringify(queryResponse)}) was returned as a response to the following query: ${originQuery}. Summarize the result in plain English, using context from the original query.`
+    return `This query result (${JSON.stringify(queryResponse)}) was returned as a response to the following query: ${originQuery}. Summarize the result in plain English, using context from the original query. If there is need for numbered or bulleted points, return response in object format with property "bullets" being represented by an array with each index of the array being a string of text for that point.`
 }
 
 const requestNormalized = async(originQuery , queryResponse) => {
