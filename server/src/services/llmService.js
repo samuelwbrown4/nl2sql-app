@@ -79,7 +79,7 @@ const requestNormalized = async(originQuery , queryResponse) => {
 
         console.log('RAW TEXT:', JSON.stringify(result.content[0].text))
 
-        return JSON.parse(result.content[0].text.replace('```json ' , '').replace('```' , ''))
+        return JSON.parse(result.content[0].text.replace('```json\n' , '').replace('\n```' , ''))
     }catch(error){
         console.log(error)
         throw error
