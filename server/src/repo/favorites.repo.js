@@ -1,13 +1,13 @@
 
 const {appDbPool} = require('../db/connections')
 
-const favoriteQuery = async(query , source , userId) => {
+const favoriteQuery = async(query , source , shortName , userId) => {
     try{
         let result = await appDbPool.query(`
-            INSERT INTO favorite_queries (query , source, user_id)
-            VALUES ($1 , $2 , $3)
+            INSERT INTO favorite_queries (query , source, short_name , user_id)
+            VALUES ($1 , $2 , $3 , $4)
             RETURNING *
-            `[query , source , userId])
+            `,[query , source , shortName , userId])
 
         return result.rows[0]
     }catch(error){
