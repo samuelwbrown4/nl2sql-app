@@ -1,4 +1,4 @@
-const { getFavorites } = require('../../../client/src/utils/favorites')
+
 const {pool} = require('../db/connections')
 
 const favoriteQuery = async(query , source , userId) => {
