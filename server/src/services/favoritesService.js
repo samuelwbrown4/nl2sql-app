@@ -13,7 +13,7 @@ const favoriteQueryService = async(req , res) => {
 
 const getFavoritesService = async(req , res) => {
     try{
-        const {userId} = req.user.userId
+        const userId = req.user.userId
         let favorites = await getFavorites(userId)
         res.status(200).json({favorites})
     }catch(error){

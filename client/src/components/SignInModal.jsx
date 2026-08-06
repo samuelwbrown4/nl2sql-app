@@ -1,9 +1,10 @@
 import {Modal , Input , Button} from '@mantine/core'
 import {useState} from 'react'
 
-function SignInModal({signInPressed , setSignInPressed , signIn}){
-    const [email , setEmail] = useState('')
-    const [password , setPassword] = useState('')
+function SignInModal({signInPressed , setSignInPressed , handleSignIn, setAuth , email , password , setEmail , setPassword}){
+  
+
+
 
     return(
         <Modal title='Sign In to SchemaSpeak' opened={signInPressed} onClose={()=>setSignInPressed(false)}>
@@ -16,7 +17,7 @@ function SignInModal({signInPressed , setSignInPressed , signIn}){
                     <span>Password: </span>
                     <Input value={password} onChange={(e)=>setPassword(e.target.value)} placeholder='Pa$$word123'/>
                 </div>  
-                <Button onClick={()=>signIn(email , password)}>Sign In</Button>
+                <Button onClick={()=>handleSignIn(email , password)}>Sign In</Button>
             </div>
         </Modal>
     )

@@ -1,16 +1,16 @@
 import {useState} from 'react';
 import {Modal , Input , Button} from '@mantine/core';
 
-function AddFavoriteModal({favModalShown , setFavModalShown , handleFavoriteQueryClick}){
+function AddFavoriteModal({favModalShown , setFavModalShown , handleFavoriteQueryClick , shortName , setShortName}){
 
-    const [shortName , setShortName] = useState('')
+    
 
     return(
-        <Modal>
+        <Modal opened={favModalShown} onClose={()=>setFavModalShown(false)}>
             <div>
                 <div style={{display: 'flex' , alignItems: 'center'}}>
                     <span>Query Name: </span>
-                    <Input value={shortName} onChange={()=>setShortName(e.target.value)}/>
+                    <Input value={shortName} onChange={(e)=>setShortName(e.target.value)}/>
                 </div>
                 <div>
                     <Button onClick={()=>handleFavoriteQueryClick(shortName)}>Save Query</Button>

@@ -13,10 +13,19 @@ const signIn = async(email , password) => {
         });
 
         let result = await response.json();
+        if(result.token){
+            localStorage.setItem('auth' , result.token)
+        }
+        
+        return result
 
     }catch(error){
         console.log(error)
     }
 }
 
-export {signIn}
+const signOut = () => {
+    localStorage.removeItem('auth')
+}
+
+export {signIn , signOut}
