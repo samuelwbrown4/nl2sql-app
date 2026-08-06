@@ -14,7 +14,7 @@ app.use(express.json())
 
 app.use('/api' , queryRoute)
 app.use('/api/users' , userRoute)
-app.use('/api/favorites')
+app.use('/api/favorites' , favoritesRoutes)
 
 app.listen(PORT , () => {
     console.log(`NL2SQL app up and running on port ${PORT}`)
