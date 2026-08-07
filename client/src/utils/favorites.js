@@ -30,7 +30,7 @@ const getFavorites = async (auth) => {
         });
 
         let result = await response.json()
-        return result
+        return result.favorites
     }catch(error){
         console.log(error)
     }

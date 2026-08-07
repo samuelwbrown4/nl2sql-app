@@ -102,9 +102,19 @@ function Home() {
         if (!localStorage.getItem('auth')) {
             return alert('You must be logged in to favorite queries!')
         }
-        await favoriteQuery(queryInput, source, shortName, auth)
+        let result = await favoriteQuery(queryInput, source, shortName, auth)
+        if(result.favorited.id){
+            setShortName('')
+            setFavModalShown(false)
+        }
         await getFavorites(auth)
 
+    }
+
+    function handleSelectFavorite(queryId){
+        let query = favoritesList.find(f=>f.id === queryId)
+        setQueryInput(query.query)
+        setSource(query.source)
     }
 
     return (
@@ -115,14 +125,15 @@ function Home() {
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <Button variant='outline' color='pink' size='md' onClick={() => handleShowFavoritesClick()}>Favorites</Button>
 
-                    <Drawer opened={favoritesShown} onClose={() => setFavoritesShown(false)} orientation='horizontal' title='Favorites'>
-                        <ul>
+                    <Drawer opened={favoritesShown} onClose={() => setFavoritesShown(false)} orientation='horizontal' title='Favorites' styles={{title: {color: 'black'}}}>
+                        <div style={{display: 'flex' , flexDirection: 'column'}}>
                             {favoritesList.map(q => (
-                                <li key={q.id}>
+                                <div className={styles.favoriteDiv} key={q.id} onClick={()=>handleSelectFavorite(q.id)}>
                                     {q.short_name}
-                                </li>
+                                </div>
+                                
                             ))}
-                        </ul>
+                        </div>
                     </Drawer>
                 </div>
 

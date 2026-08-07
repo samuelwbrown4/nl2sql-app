@@ -12,3 +12,10 @@
     flex: 1;
 }
 
+.favoriteDiv{
+    border-bottom: 1px solid gray;
+    cursor: pointer;
+}
+
+
+
