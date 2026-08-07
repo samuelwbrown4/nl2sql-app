@@ -9,7 +9,12 @@ const queryRoute = require('./src/routes/query')
 const userRoute = require('./src/routes/users')
 const favoritesRoutes = require('./src/routes/favorites')
 
-app.use(cors())
+const allowedOrigins = [
+    'http://localhost:5173',
+    'https://schema-speak.com',
+    'https://www.schema-speak.com'
+]
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json())
 
 app.use('/api' , queryRoute)
