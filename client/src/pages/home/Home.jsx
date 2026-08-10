@@ -178,7 +178,7 @@ function Home() {
                 <div className={styles.inputDiv}>
 
                     <form >
-                        <div style={{ display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center', gap: '3rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center', gap: '2rem' }}>
                             <div style={{ width: '15%' }}>
                                 <Select
                                     styles={{
@@ -197,7 +197,7 @@ function Home() {
                                     data={['routebase']}
                                     value={source}
                                     onChange={(value) => setSource(value)}
-                                    w={230}
+                                    w={'auto'}
                                     placeholder="Select Source" />
                             </div>
                             <div style={{ width: '65%' }}>
