@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Input, Select, Image, Button, Drawer , Switch} from '@mantine/core'
+import { Input, Select, Image, Button, Drawer , Switch , Loader} from '@mantine/core'
 import SignInModal from "../../components/SignInModal";
 import AddFavoriteModal from "../../components/AddFavoriteModal.jsx";
 import AddDocumentModal from "../../components/AddDocumentModal.jsx";
@@ -24,6 +24,7 @@ function Home() {
     const [answer, setAnswer] = useState('')
     const [file , setFile] = useState(null)
     const [docModalShown , setDocModalShown] = useState(false)
+    const [loading , setLoading] = useState(false)
 
     const API_URL = import.meta.env.VITE_API_URL
 
@@ -39,13 +40,17 @@ function Home() {
         fetchFavorites()
     }, [favoritesShown])
 
-
+    useEffect(()=>{
+        setAnswer('')
+        setQueryInput('')
+    } , [sqlMode])
 
     async function submitQuery() {
         if ((sqlMode && source === '') || queryInput === '') {
             return alert('Need to select a data source and submit a query')
         }
         try {
+            setLoading(true)
             let response = await fetch(`${API_URL}/api/query`, {
                 method: 'POST',
                 headers: {
@@ -61,6 +66,7 @@ function Home() {
             let result = await response.json()
 
             setAnswer(result)
+            setLoading(false)
         } catch (error) {
             console.log(error)
         }
@@ -162,18 +168,18 @@ function Home() {
             </div>
             <div className={styles.root}>
 
-                <div style={{ flex: 1, marginTop: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{marginTop: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <h1 style={{ color: 'white', paddingBottom: '2rem', margin: '0rem' }}>Welcome to SchemaSpeak!</h1>
 
                     <div style={{ paddingBottom: '2rem', display: 'flex', alignItems: 'center' }}>
-                        <Image src={'/schema_speak_logo.png'} h={150} w={150} />
+                        <Image src={'/schema_speak_logo.png'} h={120} w={120} />
                     </div>
                 </div>
                 <div className={styles.inputDiv}>
 
                     <form >
-                        <div style={{ display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center', gap: '1rem' }}>
-                            <div style={{ width: '25%' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center', gap: '.5rem' }}>
+                            <div style={{ width: '20%' }}>
                                 <Select
                                     styles={{
                                         input: {
@@ -187,15 +193,15 @@ function Home() {
                                             width: '100%'
                                         }
                                     }}
-                                    size='xl'
+                                    size='lg'
                                     data={['routebase']}
                                     value={source}
                                     onChange={(value) => setSource(value)}
                                     w={230}
                                     placeholder="Select Source" />
                             </div>
-                            <div style={{ width: '75%' }}>
-                                <Input size='xl' styles={{ input: { width: '100%', backgroundColor: '#333', borderColor: 'white', color: 'white', borderRadius: '30px' }, wrapper: { width: '100%' } }} value={queryInput} onChange={(e) => setQueryInput(e.target.value)} placeholder={'Ask away...'} onKeyDown={(e) => { if (e.key === 'Enter') submitQuery() }} />
+                            <div style={{ width: '85%' }}>
+                                <Input size='lg' styles={{ input: { width: '100%', backgroundColor: '#333', borderColor: 'white', color: 'white', borderRadius: '30px' }, wrapper: { width: '100%' } }} value={queryInput} onChange={(e) => setQueryInput(e.target.value)} placeholder={'Ask away...'} onKeyDown={(e) => { if (e.key === 'Enter') submitQuery() }} />
                             </div>
                             <div>
                                 <Image src={starIcon} h={32} w={'auto'} onClick={() => handleStarClick()} />
@@ -203,16 +209,25 @@ function Home() {
                         </div>
                     </form>
                 </div>
-                <div style={{ flex: 1 }}>
-                    <p style={{ color: 'white' }}>{answer.intro}</p>
-                    {answer.bullets &&
+                {loading ? <div style={{flex: 1}}><Loader color='pink'/></div> : 
+                <div style={{ flex: 1  , overflowY: 'scroll' , maxHeight: '40vh' , width: '70%' , display: 'flex' , alignItems: 'center' }}>
+                    <p style={{ color: 'white' , fontSize: '1.2rem'}}><b>{answer.intro}</b></p>
+                    {!answer.intro && <p style={{ color: 'white' , fontSize: '1rem'}}><b>{answer}</b></p>}
+                    {answer.bullets && sqlMode &&
                         <ul style={{ color: 'white' }}>
                             {answer.bullets.map(bullet =>
-                                <li>{bullet}</li>
+                                <li style={{textAlign: 'left'}}>{bullet}</li>
                             )}
                         </ul>
                     }
-                </div>
+                    {answer.bullets && !sqlMode &&
+                        <ol style={{ color: 'white'}}>
+                            {answer.bullets.map(bullet =>
+                                <li style={{textAlign: 'left'}}>{bullet}</li>
+                            )}
+                        </ol>
+                    }
+                </div>}
             </div>
         </div>
 

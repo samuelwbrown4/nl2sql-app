@@ -1,6 +1,6 @@
 .root{
     width: 80%;
-    height: 100vh;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -9,7 +9,7 @@
 
 .inputDiv{
     width: 100%;
-    flex: 1;
+    margin-bottom: 3rem;
 }
 
 .favoriteDiv{
