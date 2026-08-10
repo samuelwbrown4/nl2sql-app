@@ -6,8 +6,10 @@ import AddDocumentModal from "../../components/AddDocumentModal.jsx";
 import styles from './Home.module.css'
 import { signIn, signOut } from "../../utils/signIn.js";
 import { favoriteQuery, getFavorites } from "../../utils/favorites.js";
-import starIcon from '../../assets/star.svg'
+import starIcon from '../../assets/list-star.svg'
 import starFillIcon from '../../assets/star.svg'
+import dbIcon from '../../assets/database.svg'
+import docIcon from '../../assets/file-cloud.svg'
 
 function Home() {
     const [auth, setAuth] = useState(localStorage.getItem('auth') || undefined)
@@ -110,7 +112,7 @@ function Home() {
         if (!localStorage.getItem('auth')) {
             return alert('You must be logged in to favorite queries!')
         }
-        let result = await favoriteQuery(queryInput, source, shortName, auth)
+        let result = await favoriteQuery(queryInput, source, shortName, sqlMode , auth)
         if(result.favorited.id){
             setShortName('')
             setFavModalShown(false)
@@ -123,6 +125,7 @@ function Home() {
         let query = favoritesList.find(f=>f.id === queryId)
         setQueryInput(query.query)
         setSource(query.source)
+        setSqlMode(query.sqlMode)
     }
 
     return (
@@ -139,7 +142,8 @@ function Home() {
                         <div style={{display: 'flex' , flexDirection: 'column'}}>
                             {favoritesList.map(q => (
                                 <div className={styles.favoriteDiv} key={q.id} onClick={()=>handleSelectFavorite(q.id)}>
-                                    {q.short_name}
+                                    <span>{q.short_name}</span>
+                                    <Image src={q.sqlMode ? dbIcon : docIcon}/>
                                 </div>
                                 
                             ))}
@@ -154,7 +158,7 @@ function Home() {
                     <div style={{display: 'flex' , gap: '1rem' , alignItems: 'center'}}>
                         <div style={{display: 'flex' , gap: '1rem' , alignItems: 'center'}}>
                             <span style={{color: 'white'}}><b>{sqlMode ? 'SQL Mode' : 'Document Mode'}</b></span>
-                        <Switch checked={sqlMode} onChange={(e)=>setSqlMode(e.currentTarget.checked)} color='pink' size='lg'/>
+                        <Switch checked={sqlMode} onChange={(e)=>setSqlMode(e.currentTarget.checked)} color='pink' size='md'/>
                         </div>
                         <div>
                             <Button variant='outline' color='pink' onClick={()=>setDocModalShown(true)}>Add Document</Button>
@@ -204,7 +208,12 @@ function Home() {
                                 <Input size='lg' styles={{ input: { width: '100%', backgroundColor: '#333', borderColor: 'white', color: 'white', borderRadius: '30px' }, wrapper: { width: '100%' } }} value={queryInput} onChange={(e) => setQueryInput(e.target.value)} placeholder={'Ask away...'} onKeyDown={(e) => { if (e.key === 'Enter') submitQuery() }} />
                             </div>
                             <div>
-                                <Image src={starIcon} h={32} w={'auto'} onClick={() => handleStarClick()} />
+                                <Button color='pink' variant='outline' size='lg' style={{borderRadius: '50px' }} onClick={() => handleStarClick()}>
+                                    <div style={{display: 'flex' , gap: '1rem'}}>
+                                        <Image src={starIcon} h={24} w={'auto'}  />
+                                        
+                                    </div>
+                                </Button>
                             </div>
                         </div>
                     </form>
