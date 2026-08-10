@@ -86,7 +86,7 @@ const buildDocPrompt = (docs , query) => {
 }
 
 const buildDocSummaryPrompt = (file , originalQuery) => {
-    return `Take the following query and file content to synthesize instrcutions to accomplish what the user has asked. QUERY: ${originalQuery} , CONTENT: ${file}`
+    return `Take the following query and file content to synthesize instrcutions to accomplish what the user has asked. QUERY: ${originalQuery} , CONTENT: ${file}. Return response in object format with property "intro" with value of a string for the intro into the result and property "bullets" being represented by an array with each index of the array being a string of text for that point. Give no trailing text past this object.`
 }
 
 const stripSql = (text) => {
@@ -152,7 +152,7 @@ const synthesizeFileContent = async(content , originalQuery) => {
 
         let result = await response.json()
 
-        return result.content[0].text
+        return JSON.parse(result.content[0].text.replace('```json\n' , '').replace('\n```' , ''))
     }catch(error){
         console.log(error)
         throw error
