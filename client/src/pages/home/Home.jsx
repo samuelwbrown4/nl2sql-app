@@ -178,8 +178,8 @@ function Home() {
                 <div className={styles.inputDiv}>
 
                     <form >
-                        <div style={{ display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center', gap: '.5rem' }}>
-                            <div style={{ width: '20%' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center', gap: '3rem' }}>
+                            <div style={{ width: '15%' }}>
                                 <Select
                                     styles={{
                                         input: {
@@ -200,7 +200,7 @@ function Home() {
                                     w={230}
                                     placeholder="Select Source" />
                             </div>
-                            <div style={{ width: '85%' }}>
+                            <div style={{ width: '65%' }}>
                                 <Input size='lg' styles={{ input: { width: '100%', backgroundColor: '#333', borderColor: 'white', color: 'white', borderRadius: '30px' }, wrapper: { width: '100%' } }} value={queryInput} onChange={(e) => setQueryInput(e.target.value)} placeholder={'Ask away...'} onKeyDown={(e) => { if (e.key === 'Enter') submitQuery() }} />
                             </div>
                             <div>
@@ -210,7 +210,7 @@ function Home() {
                     </form>
                 </div>
                 {loading ? <div style={{flex: 1}}><Loader color='pink'/></div> : 
-                <div style={{ flex: 1  , overflowY: 'scroll' , maxHeight: '40vh' , width: '70%' , display: 'flex' , alignItems: 'center' }}>
+                <div style={{ flex: 1  , overflowY: 'scroll' , maxHeight: '40vh' , width: '70%' , display: 'flex' , alignItems: 'center' , flexDirection: 'column' , justifyContent: 'center' }}>
                     <p style={{ color: 'white' , fontSize: '1.2rem'}}><b>{answer.intro}</b></p>
                     {!answer.intro && <p style={{ color: 'white' , fontSize: '1rem'}}><b>{answer}</b></p>}
                     {answer.bullets && sqlMode &&
