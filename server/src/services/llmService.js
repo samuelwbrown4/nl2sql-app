@@ -40,8 +40,53 @@ const buildQuery = async (source, query) => {
     }
 }
 
+const buildDocQuery = async (docs , query) => {
+    try{
+        let prompt = buildDocPrompt(docs , query)
+
+        let response = await fetch('https://api.anthropic.com/v1/messages' , {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.ANTHROPIC_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+                model: 'claude-haiku-4-5-20251001',
+                max_tokens: 1000,
+                temperature: 0,
+                messages: [
+                    { role: 'user', content: prompt }
+                ]
+            })
+        });
+
+        let result = await response.json()
+
+        let noDocFound = result.content[0].text.includes('NO_DOC_FOUND')
+        let text = noDocFound ? result.content[0].text.split('NO_DOC_FOUND:' , 2)[1] :  result.content[0].text.split('FILE_FOUND:' , 2)[1]
+
+        return {
+            noDocFound: noDocFound,
+            message: text
+        }
+    }catch(error){
+        console.log(error)
+        throw error
+    }
+}
+
+
 const buildPrompt = (source, query) => {
     return `Take the following schema and query and return raw SQL that would execute the query. Return only SELECT statements, return only raw SQL, while paying attention to exact enum values, with no preamble or leading or trailing text. Be mindful of any conditions expressed in a table to determine proper SQL and do not use lazy aliases. Be intentional and descriptive in your aliasing of tables. When a question asks for human-readable information (such as names, addresses, or statuses), you MUST join to the relevant table and return the resolved value — never return a raw foreign key ID in place of the readable value it points to. Only ask for clarification when the question is genuinely ambiguous about what data is being requested, not when it simply requires a join or conditional logic to resolve. Pay attention to known pitfalls, and avoid those pitfalls. If the query is ambiguous, return a response fitting the format 'CLARIFICATION_NEEDED: <a short question asking the user what they meant>. SCHEMA: ${JSON.stringify(source)} , QUERY: ${query}`
+}
+
+const buildDocPrompt = (docs , query) => {
+    return `Take the following query and return the document that most matches what the user is asking how to do. The documents are QRG's (quick reference guides) or SOP's (standard operating procedures). Consider the tags on each document, and use the description field of each document to verify which document most matches the request. If there is no relevant document for the query, or if the query is ambiguous, return a response fitting the format 'NO_DOC_FOUND: <explain that the document was either not found because a QRG does not exist yet, or the query was too ambiguous>'. If matching document is found, only return in the format 'FILE_FOUND: <file>'. DOCUMENTS: ${JSON.stringify(docs)} , QUERY: ${query}`
+}
+
+const buildDocSummaryPrompt = (file , originalQuery) => {
+    return `Take the following query and file content to synthesize instrcutions to accomplish what the user has asked. QUERY: ${originalQuery} , CONTENT: ${file}`
 }
 
 const stripSql = (text) => {
@@ -86,4 +131,32 @@ const requestNormalized = async(originQuery , queryResponse) => {
     }
 }
 
-module.exports = { buildQuery , requestNormalized }
+const synthesizeFileContent = async(content , originalQuery) => {
+    try{
+        let prompt = buildDocSummaryPrompt(content , originalQuery)
+        let response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.ANTHROPIC_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+                model: 'claude-haiku-4-5-20251001',
+                max_tokens: 1000,
+                messages: [
+                    { role: 'user', content: prompt }
+                ]
+            })
+        })
+
+        let result = await response.json()
+
+        return result.content[0].text
+    }catch(error){
+        console.log(error)
+        throw error
+    }
+}
+
+module.exports = { buildQuery , requestNormalized , buildDocQuery , synthesizeFileContent}

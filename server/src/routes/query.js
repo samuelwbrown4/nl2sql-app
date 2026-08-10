@@ -1,34 +1,21 @@
-const config = require('../config/schemaConfig.json')
 const express = require('express')
 const router = express.Router()
 
-const {buildQuery , requestNormalized} = require('../services/llmService')
-const {executeQuery} = require('../services/dbService')
+const {sqlQueryService} = require('../services/sqlQueryService')
+const {docQueryService} = require('../services/docQueryService')
 
 router.post('/query' , async(req , res) => {
     try{
-        const {source , query} = req.body
-        
-        if(!config[source.toLowerCase()]){
-            return res.status(400).json({'Error' : 'Invalid source'})
-        }
+        const {mode , source , query} = req.body
 
-        const answer = await buildQuery(config[source.toLowerCase()] , query)
-
-        if(answer.clarification_needed){
-            return res.status(200).json(answer.message)
-        }else{
-            console.log('LOG PRE QUERY EXECUTION')
-            let sqlAnswer = await executeQuery(source.toLowerCase() , answer.message)
-
-            if(sqlAnswer.length >=10){
-                return res.status(200).json(sqlAnswer)
-            }else{
-                let normalized = await requestNormalized(query , sqlAnswer)
-                console.log('LOG POST QUERY EXECUTION')
-                return res.status(200).json(normalized)
-            }
+        if(mode === 'sql'){
+            await sqlQueryService(req , res)
             
+        }else if(mode === 'document'){
+            await docQueryService(req , res)
+           
+        }else{
+            return res.status(400).json({message: 'No mode selected'})
         }
         
     }catch(error){

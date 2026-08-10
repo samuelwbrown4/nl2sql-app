@@ -1,0 +1,44 @@
+{
+  "docs": [
+    {
+      "id": "creating-a-shipment",
+      "system": "routebase",
+      "title": "Creating a New Shipment",
+      "tags": ["shipment", "create", "spot", "contract", "booking", "open orders"],
+      "description": "How to build a shipment from open orders, toggle spot market, select equipment, and assign a carrier.",
+      "file": "creating-a-shipment.md"
+    },
+    {
+      "id": "adding-tms-user",
+      "system": "routebase",
+      "title": "Adding a TMS User",
+      "tags": ["user", "add user", "admin", "tms", "permissions", "role"],
+      "description": "Admin-only steps for adding a new user to Routebase TMS.",
+      "file": "adding-tms-user.md"
+    },
+    {
+      "id": "creating-an-order",
+      "system": "purepath",
+      "title": "Creating a New Order",
+      "tags": ["order", "create", "purepath", "line items", "direction category"],
+      "description": "How to create an order in PurePath, including direction category, locations, and line items.",
+      "file": "creating-an-order.md"
+    },
+    {
+      "id": "adding-a-customer",
+      "system": "purepath",
+      "title": "Adding a New Customer",
+      "tags": ["customer", "add customer", "purepath", "setup"],
+      "description": "How to add a new customer in PurePath before adding locations for them.",
+      "file": "adding-a-customer.md"
+    },
+    {
+      "id": "adding-customer-locations",
+      "system": "purepath",
+      "title": "Adding a Customer Location",
+      "tags": ["customer", "location", "add location", "purepath", "address"],
+      "description": "How to add a location for an existing customer, which propagates to TMS.",
+      "file": "adding-customer-locations.md"
+    }
+  ]
+}

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { Input, Select, Image, Button, Drawer } from '@mantine/core'
+import { Input, Select, Image, Button, Drawer , Switch} from '@mantine/core'
 import SignInModal from "../../components/SignInModal";
 import AddFavoriteModal from "../../components/AddFavoriteModal.jsx";
+import AddDocumentModal from "../../components/AddDocumentModal.jsx";
 import styles from './Home.module.css'
 import { signIn, signOut } from "../../utils/signIn.js";
 import { favoriteQuery, getFavorites } from "../../utils/favorites.js";
@@ -15,14 +16,14 @@ function Home() {
     const [shortName, setShortName] = useState('')
     const [queryInput, setQueryInput] = useState('');
     const [source, setSource] = useState('');
+    const [sqlMode , setSqlMode] = useState(true)
     const [signInPressed, setSignInPressed] = useState(false);
     const [favoritesShown, setFavoritesShown] = useState(false);
     const [favoritesList, setFavoritesList] = useState([])
     const [favModalShown, setFavModalShown] = useState(false)
-
-
-
     const [answer, setAnswer] = useState('')
+    const [file , setFile] = useState(null)
+    const [docModalShown , setDocModalShown] = useState(false)
 
     const API_URL = import.meta.env.VITE_API_URL
 
@@ -41,7 +42,7 @@ function Home() {
 
 
     async function submitQuery() {
-        if (source === '' || queryInput === '') {
+        if ((sqlMode && source === '') || queryInput === '') {
             return alert('Need to select a data source and submit a query')
         }
         try {
@@ -52,7 +53,8 @@ function Home() {
                 },
                 body: JSON.stringify({
                     source: source,
-                    query: queryInput
+                    query: queryInput,
+                    mode: sqlMode ? "sql" : "document"
                 })
             })
 
@@ -121,9 +123,11 @@ function Home() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <SignInModal signInPressed={signInPressed} setSignInPressed={setSignInPressed} handleSignIn={handleSignIn} email={email} password={password} setEmail={setEmail} setPassword={setPassword} />
             <AddFavoriteModal favModalShown={favModalShown} setFavModalShown={setFavModalShown} handleFavoriteQueryClick={handleFavoriteQueryClick} shortName={shortName} setShortName={setShortName} />
-            <div style={{ display: 'flex', width: '100%', justifyContent: 'flex-start', marginTop: '2rem', paddingRight: '2rem', paddingLeft: '2rem', gap: '2rem' }}>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <Button variant='outline' color='pink' size='md' onClick={() => handleShowFavoritesClick()}>Favorites</Button>
+            <AddDocumentModal file={file} setFile={setFile} docModalShown={docModalShown} setDocModalShown={setDocModalShown}/>
+            <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', marginTop: '2rem', paddingRight: '2rem', paddingLeft: '2rem', gap: '2rem' }}>
+                <div style={{display: 'flex' , gap: '1rem'}}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <Button variant='outline' color='pink'  onClick={() => handleShowFavoritesClick()}>Favorites</Button>
 
                     <Drawer opened={favoritesShown} onClose={() => setFavoritesShown(false)} orientation='horizontal' title='Favorites' styles={{title: {color: 'black'}}}>
                         <div style={{display: 'flex' , flexDirection: 'column'}}>
@@ -138,7 +142,21 @@ function Home() {
                 </div>
 
 
-                <Button variant='outline' color='pink' size='md' onClick={auth ? () => handleSignOut() : () => setSignInPressed(true)}>{auth ? 'Sign Out' : 'Sign In'}</Button>
+                <Button variant='outline' color='pink' onClick={auth ? () => handleSignOut() : () => setSignInPressed(true)}>{auth ? 'Sign Out' : 'Sign In'}</Button>
+                </div>
+                <div>
+                    <div style={{display: 'flex' , gap: '1rem' , alignItems: 'center'}}>
+                        <div style={{display: 'flex' , gap: '1rem' , alignItems: 'center'}}>
+                            <span style={{color: 'white'}}><b>{sqlMode ? 'SQL Mode' : 'Document Mode'}</b></span>
+                        <Switch checked={sqlMode} onChange={(e)=>setSqlMode(e.currentTarget.checked)} color='pink' size='lg'/>
+                        </div>
+                        <div>
+                            <Button variant='outline' color='pink' onClick={()=>setDocModalShown(true)}>Add Document</Button>
+                        </div>
+                    </div>
+                    
+                </div>
+                
 
 
             </div>
