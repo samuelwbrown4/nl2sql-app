@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Input, Select, Image, Button, Drawer , Switch , Loader} from '@mantine/core'
+import { Input, Select, Image, Button, Drawer, Switch, Loader } from '@mantine/core'
 import SignInModal from "../../components/SignInModal";
 import AddFavoriteModal from "../../components/AddFavoriteModal.jsx";
 import AddDocumentModal from "../../components/AddDocumentModal.jsx";
@@ -18,15 +18,15 @@ function Home() {
     const [shortName, setShortName] = useState('')
     const [queryInput, setQueryInput] = useState('');
     const [source, setSource] = useState('');
-    const [sqlMode , setSqlMode] = useState(true)
+    const [sqlMode, setSqlMode] = useState(true)
     const [signInPressed, setSignInPressed] = useState(false);
     const [favoritesShown, setFavoritesShown] = useState(false);
     const [favoritesList, setFavoritesList] = useState([])
     const [favModalShown, setFavModalShown] = useState(false)
     const [answer, setAnswer] = useState('')
-    const [file , setFile] = useState(null)
-    const [docModalShown , setDocModalShown] = useState(false)
-    const [loading , setLoading] = useState(false)
+    const [file, setFile] = useState(null)
+    const [docModalShown, setDocModalShown] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const API_URL = import.meta.env.VITE_API_URL
 
@@ -42,10 +42,10 @@ function Home() {
         fetchFavorites()
     }, [favoritesShown])
 
-    useEffect(()=>{
+    useEffect(() => {
         setAnswer('')
         setQueryInput('')
-    } , [sqlMode])
+    }, [sqlMode])
 
     async function submitQuery() {
         if ((sqlMode && source === '') || queryInput === '') {
@@ -102,7 +102,7 @@ function Home() {
         if (!auth) {
             return alert('You must be logged in to favorite queries!')
         }
-        if (queryInput === '' || source === '') {
+        if ( queryInput === '' || (sqlMode && source === '')) {
             return alert('You must select a source and type a query in order to save it!')
         }
         setFavModalShown(true)
@@ -112,8 +112,8 @@ function Home() {
         if (!localStorage.getItem('auth')) {
             return alert('You must be logged in to favorite queries!')
         }
-        let result = await favoriteQuery(queryInput, source, shortName, sqlMode , auth)
-        if(result.favorited.id){
+        let result = await favoriteQuery(queryInput, source, shortName, sqlMode, auth)
+        if (result.favorited.id) {
             setShortName('')
             setFavModalShown(false)
         }
@@ -121,8 +121,8 @@ function Home() {
 
     }
 
-    function handleSelectFavorite(queryId){
-        let query = favoritesList.find(f=>f.id === queryId)
+    function handleSelectFavorite(queryId) {
+        let query = favoritesList.find(f => f.id === queryId)
         setQueryInput(query.query)
         setSource(query.source)
         setSqlMode(query.sqlMode)
@@ -132,47 +132,54 @@ function Home() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <SignInModal signInPressed={signInPressed} setSignInPressed={setSignInPressed} handleSignIn={handleSignIn} email={email} password={password} setEmail={setEmail} setPassword={setPassword} />
             <AddFavoriteModal favModalShown={favModalShown} setFavModalShown={setFavModalShown} handleFavoriteQueryClick={handleFavoriteQueryClick} shortName={shortName} setShortName={setShortName} />
-            <AddDocumentModal file={file} setFile={setFile} docModalShown={docModalShown} setDocModalShown={setDocModalShown}/>
+            <AddDocumentModal file={file} setFile={setFile} docModalShown={docModalShown} setDocModalShown={setDocModalShown} />
             <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', marginTop: '2rem', paddingRight: '2rem', paddingLeft: '2rem', gap: '2rem' }}>
-                <div style={{display: 'flex' , gap: '1rem'}}>
+                <div style={{ display: 'flex', gap: '1rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <Button variant='outline' color='pink'  onClick={() => handleShowFavoritesClick()}>Favorites</Button>
+                        <Button variant='outline' color='pink' onClick={() => handleShowFavoritesClick()}>Favorites</Button>
 
-                    <Drawer opened={favoritesShown} onClose={() => setFavoritesShown(false)} orientation='horizontal' title='Favorites' styles={{title: {color: 'black'}}}>
-                        <div style={{display: 'flex' , flexDirection: 'column'}}>
-                            {favoritesList.map(q => (
-                                <div className={styles.favoriteDiv} key={q.id} onClick={()=>handleSelectFavorite(q.id)}>
-                                    <span>{q.short_name}</span>
-                                    <Image src={q.sqlMode ? dbIcon : docIcon}/>
-                                </div>
-                                
-                            ))}
-                        </div>
-                    </Drawer>
-                </div>
-
-
-                <Button variant='outline' color='pink' onClick={auth ? () => handleSignOut() : () => setSignInPressed(true)}>{auth ? 'Sign Out' : 'Sign In'}</Button>
+                        <Drawer opened={favoritesShown} onClose={() => setFavoritesShown(false)} orientation='horizontal' title='Favorites' >
+                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                {favoritesList.map(q => (
+                                    <div className={styles.favoriteDiv} key={q.id} onClick={() => handleSelectFavorite(q.id)}>
+                                        <span>{q.short_name}</span>
+                                        <Image src={q.sqlMode ? dbIcon : docIcon} />
+                                    </div>
+                                ))}
+                            </div>
+                        </Drawer>
+                    </div>
+                    <div>
+                        <Button variant='outline' color='pink' onClick={() => setDocModalShown(true)}>Add Document</Button>
+                    </div>
                 </div>
                 <div>
-                    <div style={{display: 'flex' , gap: '1rem' , alignItems: 'center'}}>
-                        <div style={{display: 'flex' , gap: '1rem' , alignItems: 'center'}}>
-                            <span style={{color: 'white'}}><b>{sqlMode ? 'SQL Mode' : 'Document Mode'}</b></span>
-                        <Switch checked={sqlMode} onChange={(e)=>setSqlMode(e.currentTarget.checked)} color='pink' size='md'/>
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+
+
+                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                            <span style={{ color: 'white' }}><b>{sqlMode ? 'SQL Mode' : 'Document Mode'}</b></span>
+                            <Switch checked={sqlMode} onChange={(e) => setSqlMode(e.currentTarget.checked)} color='pink' size='md' onLabel={<Image src={dbIcon} />} offLabel={<Image src={docIcon} />} withThumbIndicator={false} styles={{
+                                track: {
+                                    backgroundColor: sqlMode ? undefined : '#b45fe5',
+                                    borderColor: sqlMode ? undefined : '#b45fe5'
+                                }
+                            }} />
                         </div>
                         <div>
-                            <Button variant='outline' color='pink' onClick={()=>setDocModalShown(true)}>Add Document</Button>
+                            <Button variant='outline' color='pink' onClick={auth ? () => handleSignOut() : () => setSignInPressed(true)}>{auth ? 'Sign Out' : 'Sign In'}</Button>
                         </div>
                     </div>
-                    
+
+
                 </div>
-                
+
 
 
             </div>
             <div className={styles.root}>
 
-                <div style={{marginTop: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ marginTop: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <h1 style={{ color: 'white', paddingBottom: '2rem', margin: '0rem' }}>Welcome to SchemaSpeak!</h1>
 
                     <div style={{ paddingBottom: '2rem', display: 'flex', alignItems: 'center' }}>
@@ -188,7 +195,7 @@ function Home() {
                                     styles={{
                                         input: {
                                             backgroundColor: '#333',
-                                            border: '1px solid white',
+                                            border: '1px solid rgb(73, 80, 87)',
                                             width: '100%',
                                             borderRadius: '30px',
                                             color: 'white'
@@ -205,38 +212,38 @@ function Home() {
                                     placeholder="Select Source" />
                             </div>
                             <div style={{ width: '65%' }}>
-                                <Input size='lg' styles={{ input: { width: '100%', backgroundColor: '#333', borderColor: 'white', color: 'white', borderRadius: '30px' }, wrapper: { width: '100%' } }} value={queryInput} onChange={(e) => setQueryInput(e.target.value)} placeholder={'Ask away...'} onKeyDown={(e) => { if (e.key === 'Enter') submitQuery() }} />
+                                <Input size='lg' styles={{ input: { width: '100%', backgroundColor: '#333', borderColor: 'rgb(73, 80, 87)', color: 'white', borderRadius: '30px' }, wrapper: { width: '100%' } }} value={queryInput} onChange={(e) => setQueryInput(e.target.value)} placeholder={'Ask away...'} onKeyDown={(e) => { if (e.key === 'Enter') submitQuery() }} />
                             </div>
                             <div>
-                                <Button color='pink' variant='outline' size='lg' style={{borderRadius: '50px' }} onClick={() => handleStarClick()}>
-                                    <div style={{display: 'flex' , gap: '1rem'}}>
-                                        <Image src={starIcon} h={24} w={'auto'}  />
-                                        
+                                <Button color='pink' size='lg' variant='gradient' gradient={{ from: 'pink', to: 'violet', deg: 90 }} style={{ borderRadius: '50px' }} onClick={() => handleStarClick()}>
+                                    <div style={{ display: 'flex', gap: '1rem' }}>
+                                        <Image src={starIcon} h={24} w={'auto'} />
+
                                     </div>
                                 </Button>
                             </div>
                         </div>
                     </form>
                 </div>
-                {loading ? <div style={{flex: 1}}><Loader color='pink'/></div> : 
-                <div style={{ flex: 1  , overflowY: 'scroll' , maxHeight: '40vh' , width: '70%' , display: 'flex' , alignItems: 'center' , flexDirection: 'column' , justifyContent: 'center' }}>
-                    <p style={{ color: 'white' , fontSize: '1.2rem'}}><b>{answer.intro}</b></p>
-                    {!answer.intro && <p style={{ color: 'white' , fontSize: '1rem'}}><b>{answer}</b></p>}
-                    {answer.bullets && sqlMode &&
-                        <ul style={{ color: 'white' }}>
-                            {answer.bullets.map(bullet =>
-                                <li style={{textAlign: 'left'}}>{bullet}</li>
-                            )}
-                        </ul>
-                    }
-                    {answer.bullets && !sqlMode &&
-                        <ol style={{ color: 'white'}}>
-                            {answer.bullets.map(bullet =>
-                                <li style={{textAlign: 'left'}}>{bullet}</li>
-                            )}
-                        </ol>
-                    }
-                </div>}
+                {loading ? <div style={{ flex: 1 }}><Loader color='pink' /></div> :
+                    <div style={{ flex: 1, overflowY: 'scroll', maxHeight: '30vh', width: '70%', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                        <p style={{ color: 'white', fontSize: '1.2rem' }}><b>{answer.intro}</b></p>
+                        {!answer.intro && <p style={{ color: 'white', fontSize: '1rem' }}><b>{answer}</b></p>}
+                        {answer.bullets && sqlMode &&
+                            <ul style={{ color: 'white' }}>
+                                {answer.bullets.map(bullet =>
+                                    <li style={{ textAlign: 'left' }}>{bullet}</li>
+                                )}
+                            </ul>
+                        }
+                        {answer.bullets && !sqlMode &&
+                            <ol style={{ color: 'white' }}>
+                                {answer.bullets.map(bullet =>
+                                    <li style={{ textAlign: 'left' }}>{bullet}</li>
+                                )}
+                            </ol>
+                        }
+                    </div>}
             </div>
         </div>
 

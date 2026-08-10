@@ -6,14 +6,14 @@ function AddFavoriteModal({favModalShown , setFavModalShown , handleFavoriteQuer
     
 
     return(
-        <Modal opened={favModalShown} onClose={()=>setFavModalShown(false)}>
-            <div>
-                <div style={{display: 'flex' , alignItems: 'center'}}>
+        <Modal title={<h3>Name Query</h3>} opened={favModalShown} onClose={()=>setFavModalShown(false)}>
+            <div style={{display: 'flex' , flexDirection: 'column' , alignItems: 'center' , gap: '2rem'}}>
+                <div style={{display: 'flex' , alignItems: 'center' , gap: '1rem'}}>
                     <span>Query Name: </span>
                     <Input value={shortName} onChange={(e)=>setShortName(e.target.value)}/>
                 </div>
-                <div>
-                    <Button onClick={()=>handleFavoriteQueryClick(shortName)}>Save Query</Button>
+                <div style={{width: '50%' , display: 'flex' , justifyContent: 'center'}}>
+                    <Button variant='gradient' gradient={{ from: 'pink', to: 'violet', deg: 90 }} onClick={()=>handleFavoriteQueryClick(shortName)}>Save Query</Button>
                 </div>
             </div>
         </Modal>

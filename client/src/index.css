@@ -97,3 +97,42 @@ body {
   margin: 0;
   background: var(--bg);
 }
+
+.mantine-Drawer-root{
+  background-color: #16171d;
+}
+
+.mantine-Drawer-content{
+  background-color: #16171d;
+  color: #fcfcfc;
+}
+
+.mantine-Drawer-header{
+  background-color: #16171d;
+  color: #fcfcfc;
+}
+
+.mantine-Modal-content{
+  background-color: #16171d;
+  color: #fcfcfc;
+}
+
+.mantine-Modal-header{
+  background-color: #16171d;
+  color: #fcfcfc;
+}
+
+.mantine-Input-input{
+  border-color: rgb(73, 80, 87);
+  background-color: #333;
+  color: #fcfcfc;
+}
+
+.mantine-CloseButton-root:hover{
+  background-color: black;
+}
+
+.mantine-Switch-thumb{
+      background-color: #fcfcfc !important;
+    border-color: #ff69b4 !important;
+}
