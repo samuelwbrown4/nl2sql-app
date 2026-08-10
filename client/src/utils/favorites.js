@@ -10,6 +10,7 @@ const favoriteQuery = async (query , source , shortName , sqlMode , auth) => {
             body: JSON.stringify({
                 query: query,
                 source: source,
+                sqlMode: sqlMode,
                 shortName: shortName
             })
         });
