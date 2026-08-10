@@ -64,7 +64,7 @@ const buildDocQuery = async (docs , query) => {
         let result = await response.json()
 
         let noDocFound = result.content[0].text.includes('NO_DOC_FOUND')
-        let text = noDocFound ? result.content[0].text.split('NO_DOC_FOUND:' , 2)[1] :  result.content[0].text.split('FILE_FOUND:' , 2)[1]
+        let text = noDocFound ? result.content[0].text.split('NO_DOC_FOUND:' , 2)[1] :  result.content[0].text.split('FILE_FOUND: ' , 2)[1]
 
         return {
             noDocFound: noDocFound,
