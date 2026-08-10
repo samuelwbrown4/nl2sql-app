@@ -1,4 +1,4 @@
-const favoriteQuery = async (query , source , shortName , auth) => {
+const favoriteQuery = async (query , source , shortName , sqlMode , auth) => {
     try {
         const API_URL = import.meta.env.VITE_API_URL
         let response = await fetch(`${API_URL}/api/favorites/`, {
