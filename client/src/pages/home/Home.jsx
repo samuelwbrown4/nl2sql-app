@@ -26,7 +26,7 @@ function Home() {
     const [favoritesList, setFavoritesList] = useState([])
     const [favModalShown, setFavModalShown] = useState(false)
     const [answer, setAnswer] = useState('')
-    const [file, setFile] = useState(null)
+    
     const [docModalShown, setDocModalShown] = useState(false)
     const [createDocShown , setCreateDocShown] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -135,7 +135,7 @@ function Home() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <SignInModal signInPressed={signInPressed} setSignInPressed={setSignInPressed} handleSignIn={handleSignIn} email={email} password={password} setEmail={setEmail} setPassword={setPassword} />
             <AddFavoriteModal favModalShown={favModalShown} setFavModalShown={setFavModalShown} handleFavoriteQueryClick={handleFavoriteQueryClick} shortName={shortName} setShortName={setShortName} />
-            <AddDocumentModal file={file} setFile={setFile} docModalShown={docModalShown} setDocModalShown={setDocModalShown} />
+            <AddDocumentModal docModalShown={docModalShown} setDocModalShown={setDocModalShown} auth={auth}/>
             <CreateDocumentModal createDocShown={createDocShown} setCreateDocShown={setCreateDocShown} auth={auth}/>
             <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', marginTop: '2rem', paddingRight: '2rem', paddingLeft: '2rem', gap: '2rem' }}>
                 <div style={{ display: 'flex', gap: '1rem' }}>

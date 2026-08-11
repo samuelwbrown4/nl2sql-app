@@ -38,5 +38,21 @@ const createDocService = async (req , res) => {
     }
 }
 
-module.exports = {draftDocService , createDocService}
+const uploadDraftFromFileService = async () => {
+    try{
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' })
+        }
+
+        const { system, title } = req.body
+        const content = req.file.buffer.toString('utf-8')
+        const draft = await buildDocDraftQuery(title, system, content)
+
+        res.status(200).json(draft)
+    }catch(error){
+        res.status(500).json({error: error.message})
+    }
+}
+
+module.exports = {draftDocService , createDocService , uploadDraftFromFileService}
 

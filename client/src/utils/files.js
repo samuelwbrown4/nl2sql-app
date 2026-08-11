@@ -50,4 +50,25 @@ const uploadDoc = async (title, description, fileName, tags, system , fileConten
     }
 }
 
-export { createFile, uploadDoc }
+const uploadDocFile = async(file , title , system) => {
+    const API_URL = import.meta.env.VITE_API_URL
+    try{
+        let formData = new FormData()
+        formData.append('file' , file)
+        formData.append('title' , title)
+        formData.append('system' , system)
+
+        let response = await fetch(`${API_URL}/api/documents/upload` , {
+            method: 'POST',
+            body: formData
+        });
+
+        let result = await response.json()
+
+        return result
+    }catch(error){
+        console.log(error)
+    }
+}
+
+export { createFile, uploadDoc , uploadDocFile}
