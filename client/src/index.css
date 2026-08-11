@@ -136,3 +136,7 @@ body {
       background-color: #fcfcfc !important;
     border-color: #ff69b4 !important;
 }
+
+.mantine-LoadingOverlay-overlay{
+  background-color: #16171d00
+}

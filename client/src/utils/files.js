@@ -18,7 +18,8 @@ const createFile = async(title , system , content , auth) => {
 
         let result = await response.json()
 
-        return response
+        let r = await result.json()
+        return r
     }catch(error){
         console.log(error)
     }

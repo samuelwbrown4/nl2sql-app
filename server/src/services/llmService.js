@@ -99,7 +99,7 @@ const buildDocDraftQuery = async (title , system , content) => {
 
         let result = await response.json()
 
-        let fileContent = stripJson(result.content[0].text)
+        let fileContent = JSON.parse(stripJson(result.content[0].text))
 
         return fileContent
     }catch(error){
