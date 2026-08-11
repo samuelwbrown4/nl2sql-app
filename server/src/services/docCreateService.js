@@ -1,5 +1,5 @@
 const {buildDocDraftQuery} = require('../services/llmService')
-const {uploadDocContent , updateDocConfig} = require('../services/s3Service')
+const {uploadDocContent , updateDocConfig , getDocContent} = require('../services/s3Service')
 
 const draftDocService = async (req , res) => {
     try{

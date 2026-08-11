@@ -42,7 +42,7 @@ function SaveDocDraft() {
         }
         let result = await uploadDoc(title, description, fileName, tags, system , fileContent , auth)
 
-        if(result.message.includes('Successfully')){
+        if(result.message && result.message.includes('Successfully')){
             navigate('/')
         }else{
             return alert(result.error)
