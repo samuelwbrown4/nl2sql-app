@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState , useEffect} from 'react'
 import {useNavigate} from 'react-router'
 import { Modal, FileButton, Button , Input} from '@mantine/core'
 import { uploadDocFile } from '../utils/files'
@@ -11,14 +11,22 @@ function AddDocumentModal({docModalShown, setDocModalShown , auth}) {
 
     const navigate = useNavigate()
 
-    function handleUploadClick(){
+    useEffect(()=> {
+        if(draft === null){
+            return
+        }else{
+            navigate('/document-create' , {state : draft , auth: auth})
+        }
+    },[draft])
+
+    async function handleUploadClick(){
         if(file === null || title === '' || system === ''){
             return alert('Please select a file and fill out all fields')
         }else{
             let draftDoc = await uploadDocFile(file , title , system)
-            if(draftDoc.title){
+            if(draftDoc){
                 setDraft(draftDoc)
-                navigate('/document-create' , {state : draft , auth: auth})
+                
             }
         }
     }

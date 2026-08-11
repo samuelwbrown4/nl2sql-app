@@ -38,7 +38,7 @@ const createDocService = async (req , res) => {
     }
 }
 
-const uploadDraftFromFileService = async () => {
+const uploadDraftFromFileService = async (res , res) => {
     try{
         if (!req.file) {
             return res.status(400).json({ error: 'No file uploaded' })
