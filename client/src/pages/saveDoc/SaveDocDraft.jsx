@@ -36,7 +36,7 @@ function SaveDocDraft() {
         setTags([])
     }
 
-    function handleConfirmClick(){
+    async function handleConfirmClick(){
         if(title === '' || system === '' || description === '' || fileContent === '' || fileName === '' || tags === [] || tags.length < 2){
             return alert('Fill out all fields')
         }
