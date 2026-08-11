@@ -1,6 +1,9 @@
 import { Modal, Button } from '@mantine/core'
+import {useNavigate} from 'react-router'
 
-function ConfirmationModal({ open, setOpen , approve }) {
+function ConfirmationModal({ open, setOpen }) {
+
+    const navigate = useNavigate()
 
     return (
         <Modal opened={open} onClose={() => setOpen(false)}>
@@ -8,7 +11,7 @@ function ConfirmationModal({ open, setOpen , approve }) {
                 <h2>Are you sure?</h2>
                 <div style={{ display: 'flex', gap: '2rem' }}>
                     <Button variant='outline' color='red' onClick={()=>setOpen(false)}>No</Button>
-                    <Button variant='outline' color='green'>Yes</Button>
+                    <Button variant='outline' color='green' onClick={()=>navigate('/')}>Yes</Button>
                 </div>
             </div>
         </Modal>

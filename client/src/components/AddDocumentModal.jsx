@@ -1,6 +1,6 @@
 import {useState , useEffect} from 'react'
 import {useNavigate} from 'react-router'
-import { Modal, FileButton, Button , Input} from '@mantine/core'
+import { Modal, FileButton, Button , Input , LoadingOverlay} from '@mantine/core'
 import { uploadDocFile } from '../utils/files'
 
 function AddDocumentModal({docModalShown, setDocModalShown , auth}) {
@@ -8,6 +8,8 @@ function AddDocumentModal({docModalShown, setDocModalShown , auth}) {
     const [title , setTitle] = useState('')
     const [system , setSystem] = useState('')
     const [draft , setDraft] = useState(null)
+
+    const [loading , setLoading] = useState(false)
 
     const navigate = useNavigate()
 
@@ -20,11 +22,14 @@ function AddDocumentModal({docModalShown, setDocModalShown , auth}) {
     },[draft])
 
     async function handleUploadClick(){
+        setLoading(true)
         if(file === null || title === '' || system === ''){
+            setLoading(false)
             return alert('Please select a file and fill out all fields')
         }else{
             let draftDoc = await uploadDocFile(file , title , system)
             if(draftDoc){
+                setLoading(false)
                 setDraft(draftDoc)
                 
             }
@@ -33,6 +38,7 @@ function AddDocumentModal({docModalShown, setDocModalShown , auth}) {
 
     return (
         <Modal opened={docModalShown} onClose={() => setDocModalShown(false)} title='Add Document'>
+            <LoadingOverlay visible={loading} zIndex={1000} overlayProps={{ radius: "xl", blur: 2 }} loaderProps={{ color: 'pink', type: 'bars' }} />
             <div style={{ display: 'flex', flexDirection: 'column' , alignItems: 'center' , gap: '2rem' }}>
                 <div style={{width: '50%' , display: 'flex' , justifyContent: 'center'}}>
                     <FileButton onChange={setFile} accept=".md,.pdf,.docx">
