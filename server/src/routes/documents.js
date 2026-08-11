@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router()
 
-const {draftDocService} = require('../services/docCreateService')
+const {draftDocService , createDocService} = require('../services/docCreateService')
 
 router.post('/draft' , draftDocService)
+
+router.post('/create' , createDocService)
 
 module.exports = router

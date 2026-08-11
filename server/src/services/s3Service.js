@@ -1,4 +1,4 @@
-const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3')
+const { S3Client, GetObjectCommand , PutObjectCommand } = require('@aws-sdk/client-s3')
 
 const s3Client = new S3Client({ region: 'us-east-1' })
 
@@ -13,4 +13,25 @@ const getDocContent = async (key) => {
     return content
 }
 
-module.exports = { getDocContent }
+const uploadDocContent = async (key , content) => {
+    const command = new PutObjectCommand({
+        Bucket: 'schemaspeak-docs' , 
+        Key: key,
+        Body: content,
+        ContentType: 'text/markdown'
+    });
+
+    await s3Client.send(command)
+}
+
+const updateDocConfig = async (config) => {
+    const command = new PutObjectCommand({
+        Bucket: 'schemaspeak-docs',
+        Key: 'docConfig.json',
+        Body: JSON.stringify(config, null, 2),
+        ContentType: 'application/json'
+    })
+    await s3Client.send(command)
+}
+
+module.exports = { getDocContent , uploadDocContent , updateDocConfig}

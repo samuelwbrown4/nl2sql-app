@@ -1,8 +1,23 @@
 .root{
+    width: 80%;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    gap: 1.5rem;
+    padding-bottom: 2rem;
+    
 }
 
-.inputDiv{
-    display: flex;
+.inputDiv {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.span{
+    color: #fcfcfc
 }

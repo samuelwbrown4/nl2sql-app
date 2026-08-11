@@ -1,4 +1,3 @@
-const config = require('../config/docConfig.json')
 const { buildDocQuery, synthesizeFileContent } = require('./llmService')
 const {getDocContent} = require('../services/s3Service')
 
@@ -6,6 +5,7 @@ const {getDocContent} = require('../services/s3Service')
 const docQueryService = async (req , res) => {
     try{
         const {query} = req.body
+        const config = JSON.parse(await getDocContent('docConfig.json'))
         let doc =  await buildDocQuery(config.docs , query)
         if(doc.noDocFound){
             return res.status(doc.message)

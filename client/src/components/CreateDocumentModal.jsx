@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState , useEffect } from 'react'
+import {useNavigate} from 'react-router'
 import { Modal, Input, Textarea, Button , LoadingOverlay} from '@mantine/core'
 import { createFile } from '../utils/files'
 
@@ -8,15 +9,28 @@ function CreateDocumentModal({ createDocShown, setCreateDocShown, auth }) {
     const [content, setContent] = useState('')
     const [loading , setLoading] = useState(false)
 
+    const [draft , setDraft] = useState(null)
+
+    const navigate = useNavigate()
+
+    useEffect(()=> {
+        if(draft === null){
+            return
+        }else{
+            navigate('/document-create' , {state : draft , auth: auth})
+        }
+    },[draft])
+
     async function nextClickHandler() {
         if (title === '' || system === '' || content === '') {
             return alert('Please fill out all fields first')
         }
         setLoading(true)
-        let draft = await createFile(title, system, content, auth)
-        if(draft){
+        let docDraft = await createFile(title, system, content, auth)
+        if(docDraft){
             setLoading(false)
-            console.log(draft)
+            console.log(docDraft)
+            setDraft(docDraft)
         }
     }
 
