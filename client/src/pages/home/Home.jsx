@@ -3,6 +3,8 @@ import { Input, Select, Image, Button, Drawer, Switch, Loader } from '@mantine/c
 import SignInModal from "../../components/SignInModal";
 import AddFavoriteModal from "../../components/AddFavoriteModal.jsx";
 import AddDocumentModal from "../../components/AddDocumentModal.jsx";
+import CreateDocumentModal from "../../components/CreateDocumentModal.jsx";
+import DocumentsMenu from "../../components/DocumentsMenu.jsx";
 import styles from './Home.module.css'
 import { signIn, signOut } from "../../utils/signIn.js";
 import { favoriteQuery, getFavorites } from "../../utils/favorites.js";
@@ -26,6 +28,7 @@ function Home() {
     const [answer, setAnswer] = useState('')
     const [file, setFile] = useState(null)
     const [docModalShown, setDocModalShown] = useState(false)
+    const [createDocShown , setCreateDocShown] = useState(false)
     const [loading, setLoading] = useState(false)
 
     const API_URL = import.meta.env.VITE_API_URL
@@ -133,6 +136,7 @@ function Home() {
             <SignInModal signInPressed={signInPressed} setSignInPressed={setSignInPressed} handleSignIn={handleSignIn} email={email} password={password} setEmail={setEmail} setPassword={setPassword} />
             <AddFavoriteModal favModalShown={favModalShown} setFavModalShown={setFavModalShown} handleFavoriteQueryClick={handleFavoriteQueryClick} shortName={shortName} setShortName={setShortName} />
             <AddDocumentModal file={file} setFile={setFile} docModalShown={docModalShown} setDocModalShown={setDocModalShown} />
+            <CreateDocumentModal createDocShown={createDocShown} setCreateDocShown={setCreateDocShown} auth={auth}/>
             <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', marginTop: '2rem', paddingRight: '2rem', paddingLeft: '2rem', gap: '2rem' }}>
                 <div style={{ display: 'flex', gap: '1rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -143,14 +147,14 @@ function Home() {
                                 {favoritesList.map(q => (
                                     <div className={styles.favoriteDiv} key={q.id} onClick={() => handleSelectFavorite(q.id)}>
                                         <span>{q.short_name}</span>
-                                        <Image src={q.sqlMode ? dbIcon : docIcon} />
+                                        <Image src={q.sqlMode ? dbIcon : docIcon} h={16} w={'auto'}/>
                                     </div>
                                 ))}
                             </div>
                         </Drawer>
                     </div>
                     <div>
-                        <Button variant='outline' color='pink' onClick={() => setDocModalShown(true)}>Add Document</Button>
+                        <DocumentsMenu setDocModalShown={setDocModalShown} setCreateDocShown={setCreateDocShown}/>
                     </div>
                 </div>
                 <div>

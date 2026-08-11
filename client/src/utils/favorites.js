@@ -15,6 +15,7 @@ const favoriteQuery = async (query , source , shortName , sqlMode , auth) => {
             })
         });
         let result = await response.json()
+        return result
     } catch (error) {
         console.log(error)
     }
