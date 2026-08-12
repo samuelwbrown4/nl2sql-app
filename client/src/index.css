@@ -173,3 +173,18 @@ body {
   padding-left: 0;
   padding-right: 0;
 }
+
+.mantine-Table-table{
+  color: white;
+}
+
+	.mantine-Table-th{
+    text-align: center;
+  }
+
+  
+  .mantine-Table-tr{
+    border-bottom: 1px solid #3a3d4e;
+  }
+
+  

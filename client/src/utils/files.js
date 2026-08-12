@@ -39,6 +39,7 @@ const uploadDoc = async (title, description, fileName, tags, system , fileConten
                 fileName,
                 tags,
                 fileContent,
+                system
             })
         });
 

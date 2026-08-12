@@ -1,4 +1,5 @@
 const { S3Client, GetObjectCommand , PutObjectCommand } = require('@aws-sdk/client-s3')
+const {getSignedUrl} = require('@aws-sdk/s3-request-presigner')
 
 const s3Client = new S3Client({ region: 'us-east-1' })
 
@@ -45,4 +46,14 @@ const getDocConfig = async () => {
     return content
 }
 
-module.exports = { getDocContent , uploadDocContent , updateDocConfig , getDocConfig}
+const getDownloadUrl = async(file) => {
+    const command = new GetObjectCommand({
+        Bucket: 'schemaspeak-docs',
+        Key: file,
+        ResponseContentDisposition: `attachment; filename="${file}"`
+    })
+    const url = await getSignedUrl(s3Client , command , {expiresIn: 300})
+    return url
+}
+
+module.exports = { getDocContent , uploadDocContent , updateDocConfig , getDocConfig , getDownloadUrl}

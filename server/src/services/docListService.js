@@ -1,4 +1,4 @@
-const {getDocConfig} = require('../services/s3Service')
+const {getDocConfig , getDocContent} = require('../services/s3Service')
 
 const getDocListService = async (req , res) => {
     try{
@@ -10,4 +10,15 @@ const getDocListService = async (req , res) => {
     }
 }
 
-module.exports = {getDocListService}
+const previewDocService = async (req , res) => {
+    try{
+        const {file} = req.params
+        let content = await getDocContent(file)
+        res.status(200).json(content)
+
+    }catch(error){
+        res.status(500).json({error: error.message})
+    }
+}
+
+module.exports = {getDocListService , previewDocService}
