@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Input, Select, Image, Button, Drawer, Switch, Loader } from '@mantine/core'
 import SignInModal from "../../components/SignInModal";
 import AddFavoriteModal from "../../components/AddFavoriteModal.jsx";
@@ -26,10 +26,12 @@ function Home() {
     const [favoritesList, setFavoritesList] = useState([])
     const [favModalShown, setFavModalShown] = useState(false)
     const [answer, setAnswer] = useState('')
-    
+
     const [docModalShown, setDocModalShown] = useState(false)
-    const [createDocShown , setCreateDocShown] = useState(false)
+    const [createDocShown, setCreateDocShown] = useState(false)
     const [loading, setLoading] = useState(false)
+
+    const selectingFavorite = useRef(false)
 
     const API_URL = import.meta.env.VITE_API_URL
 
@@ -46,6 +48,10 @@ function Home() {
     }, [favoritesShown])
 
     useEffect(() => {
+        if (selectingFavorite.current) {
+            selectingFavorite.current = false
+            return
+        }
         setAnswer('')
         setQueryInput('')
         setSource(null)
@@ -106,7 +112,7 @@ function Home() {
         if (!auth) {
             return alert('You must be logged in to favorite queries!')
         }
-        if ( queryInput === '' || (sqlMode && source === '')) {
+        if (queryInput === '' || (sqlMode && source === '')) {
             return alert('You must select a source and type a query in order to save it!')
         }
         setFavModalShown(true)
@@ -126,10 +132,11 @@ function Home() {
     }
 
     function handleSelectFavorite(queryId) {
+        selectingFavorite.current = true
         let query = favoritesList.find(f => f.id === queryId)
+        setSqlMode(query.sql_mode)
         setQueryInput(query.query)
         setSource(query.source)
-        setSqlMode(query.sqlMode)
         setFavoritesShown(false)
     }
 
@@ -137,8 +144,8 @@ function Home() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <SignInModal signInPressed={signInPressed} setSignInPressed={setSignInPressed} handleSignIn={handleSignIn} email={email} password={password} setEmail={setEmail} setPassword={setPassword} />
             <AddFavoriteModal favModalShown={favModalShown} setFavModalShown={setFavModalShown} handleFavoriteQueryClick={handleFavoriteQueryClick} shortName={shortName} setShortName={setShortName} />
-            <AddDocumentModal docModalShown={docModalShown} setDocModalShown={setDocModalShown} auth={auth}/>
-            <CreateDocumentModal createDocShown={createDocShown} setCreateDocShown={setCreateDocShown} auth={auth}/>
+            <AddDocumentModal docModalShown={docModalShown} setDocModalShown={setDocModalShown} auth={auth} />
+            <CreateDocumentModal createDocShown={createDocShown} setCreateDocShown={setCreateDocShown} auth={auth} />
             <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', marginTop: '2rem', paddingRight: '2rem', paddingLeft: '2rem', gap: '2rem' }}>
                 <div style={{ display: 'flex', gap: '1rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -149,14 +156,14 @@ function Home() {
                                 {favoritesList.map(q => (
                                     <div className={styles.favoriteDiv} key={q.id} onClick={() => handleSelectFavorite(q.id)}>
                                         <span>{q.short_name}</span>
-                                        <Image src={q.sqlMode ? dbIcon : docIcon} h={16} w={'auto'}/>
+                                        <Image src={q.sql_mode ? dbIcon : docIcon} h={16} w={'auto'} />
                                     </div>
                                 ))}
                             </div>
                         </Drawer>
                     </div>
                     <div>
-                        <DocumentsMenu setDocModalShown={setDocModalShown} setCreateDocShown={setCreateDocShown}/>
+                        <DocumentsMenu setDocModalShown={setDocModalShown} setCreateDocShown={setCreateDocShown} />
                     </div>
                 </div>
                 <div>

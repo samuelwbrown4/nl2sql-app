@@ -21,7 +21,8 @@ function SaveDocDraft() {
     const [system, setSystem] = useState(draft?.system)
     const [description, setDescription] = useState(draft?.description)
     const [fileContent, setFileContent] = useState(draft?.content)
-    const [fileName, setFileName] = useState(draft?.file)
+    const [fileBase, setFileBase] = useState(draft?.file.split('.')[0])
+    const [fileExtension, setFileExtension] = useState(`.${draft?.file.split('.')[1]}`)
     const [tags , setTags] = useState(draft?.tags)
     
 
@@ -32,15 +33,16 @@ function SaveDocDraft() {
         setSystem('')
         setDescription('')
         setFileContent('')
-        setFileName('')
+        setFileBase('')
+        setFileExtension('')
         setTags([])
     }
 
     async function handleConfirmClick(){
-        if(title === '' || system === '' || description === '' || fileContent === '' || fileName === '' || tags === [] || tags.length < 2){
+        if(title === '' || system === '' || description === '' || fileContent === '' || fileBase === '' || tags === [] || tags.length < 2){
             return alert('Fill out all fields')
         }
-        let result = await uploadDoc(title, description, fileName, tags, system , fileContent , auth)
+        let result = await uploadDoc(title, description, `${fileBase}${fileExtension}`, tags, system , fileContent , auth)
 
         if(result.message && result.message.includes('Successfully')){
             navigate('/')
@@ -64,7 +66,7 @@ function SaveDocDraft() {
                 </div>
                 <div className={styles.inputDiv}>
                     <span className={styles.span}>File Name:</span>
-                    <Input value={fileName} onChange={(e) => setFileName(e.target.value)} />
+                    <Input value={fileBase} onChange={(e) => setFileBase(e.target.value)} rightSection={<span>{fileExtension}</span>} />
                 </div>
                 <div className={styles.inputDiv}>
                     <span className={styles.span}>Tags:</span>

@@ -1,5 +1,6 @@
 const {buildDocDraftQuery} = require('../services/llmService')
 const {uploadDocContent , updateDocConfig , getDocContent} = require('../services/s3Service')
+const mammoth = require('mammoth')
 
 const draftDocService = async (req , res) => {
     try{
@@ -38,6 +39,22 @@ const createDocService = async (req , res) => {
     }
 }
 
+const extractText = async (fileName , buffer) => {
+    
+    const extension = fileName.split('.')[1]
+
+    if(extension === 'md' || extension === 'txt'){
+        return buffer.toString('utf-8')
+    }
+    
+    if(extension === 'docx'){
+        let result = await mammoth.extractRawText({buffer})
+        return result.value
+    }
+
+    throw new Error(`Unsupported file type: .${extension}`)
+}
+
 const uploadDraftFromFileService = async (req , res) => {
     try{
         if (!req.file) {
@@ -45,7 +62,7 @@ const uploadDraftFromFileService = async (req , res) => {
         }
 
         const { system, title } = req.body
-        const content = req.file.buffer.toString('utf-8')
+        const content = await extractText(req.file.originalname , req.file.buffer)
         const draft = await buildDocDraftQuery(title, system, content)
 
         res.status(200).json(draft)
@@ -54,5 +71,5 @@ const uploadDraftFromFileService = async (req , res) => {
     }
 }
 
-module.exports = {draftDocService , createDocService , uploadDraftFromFileService}
+module.exports = {draftDocService , createDocService , uploadDraftFromFileService , extractText}
 

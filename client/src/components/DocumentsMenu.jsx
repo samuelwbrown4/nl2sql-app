@@ -15,7 +15,7 @@ function DocumentsMenu({setDocModalShown , setCreateDocShown}){
         <Menu>
             
             <Menu.Target>
-                <Button variant='outline' color='pink' >Documents</Button>
+                <Button variant='outline' color='pink'>Documents</Button>
             </Menu.Target>
 
             <Menu.Dropdown>

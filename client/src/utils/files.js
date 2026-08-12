@@ -93,7 +93,7 @@ const downloadFile = async (fileName) => {
     const API_URL = import.meta.env.VITE_API_URL
     try{
         let response = await fetch(`${API_URL}/api/documents/download/${fileName}` , {
-            method: 'POST',
+            
             headers: {
                 'Content-Type' : 'application/json'
             }
@@ -111,7 +111,7 @@ const previewFile = async(fileName) => {
     let API_URL = import.meta.env.VITE_API_URL
     try{
         let response = await fetch(`${API_URL}/api/documents/preview/${fileName}` , {
-            method: 'POST',
+            
             headers: {
                 'Content-Type' : 'application/json'
             }

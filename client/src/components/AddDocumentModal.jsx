@@ -37,13 +37,14 @@ function AddDocumentModal({docModalShown, setDocModalShown , auth}) {
     }
 
     return (
-        <Modal opened={docModalShown} onClose={() => setDocModalShown(false)} title='Add Document'>
+        <Modal opened={docModalShown} onClose={() => setDocModalShown(false)} title='Upload Document'>
             <LoadingOverlay visible={loading} zIndex={1000} overlayProps={{ radius: "xl", blur: 2 }} loaderProps={{ color: 'pink', type: 'bars' }} />
             <div style={{ display: 'flex', flexDirection: 'column' , alignItems: 'center' , gap: '2rem' }}>
-                <div style={{width: '50%' , display: 'flex' , justifyContent: 'center'}}>
-                    <FileButton onChange={setFile} accept=".md,.pdf,.docx">
-                        {(props) => <Button variant='outline' color='pink' {...props}>Select file</Button>}
+                <div style={{width: '50%' , display: 'flex' , justifyContent: 'center' , flexDirection: 'column' , gap: '0.5rem'}}>
+                    <FileButton onChange={setFile} accept=".md,.txt,.docx">
+                        {(props) => <Button variant='outline' color='pink' {...props}>Choose File</Button>}
                     </FileButton>
+                    <span style={{fontSize: '.7rem' , color: '#ccc'}}>Supported File Types: .md, .txt, .docx</span>
                 </div>
 
                 {file &&

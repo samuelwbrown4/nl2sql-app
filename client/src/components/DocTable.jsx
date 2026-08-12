@@ -7,9 +7,10 @@ import { downloadFile , previewFile} from '../utils/files';
 function DocTable({ files }) {
     const [showPreview , setShowPreview] = useState(false)
     const [file , setFile] = useState('')
+    const [fileName , setFileName] = useState('')
 
-    async function handleDownloadClick(fileName){
-        let result = await downloadFile(fileName)
+    async function handleDownloadClick(name){
+        let result = await downloadFile(name)
         if(!result.url){
             return alert('Could not download file')
         }else{
@@ -17,17 +18,18 @@ function DocTable({ files }) {
         }
     }
 
-    async function handlePreviewClick(fileName){
-        let content = await previewFile(fileName)
+    async function handlePreviewClick(name){
+        let content = await previewFile(name)
         if(content){
             setFile(content)
+            setFileName(name)
             setShowPreview(true)
         }
     }
 
     return (
         <Table>
-            <DocPreview showPreview={showPreview} setShowPreview={setShowPreview} file={file}/>
+            <DocPreview showPreview={showPreview} setShowPreview={setShowPreview} file={file} fileName={fileName}/>
             <Table.Thead>
                 <Table.Tr>
                     <Table.Th>File Name</Table.Th>

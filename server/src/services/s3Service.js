@@ -14,6 +14,16 @@ const getDocContent = async (key) => {
     return content
 }
 
+const getDocBuffer = async (key) => {
+    const command = new GetObjectCommand({
+        Bucket: 'schemaspeak-docs',
+        Key: key
+    })
+    const response = await s3Client.send(command)
+    const buffer = Buffer.from(await response.Body.transformToByteArray())
+    return buffer
+}
+
 const uploadDocContent = async (key , content) => {
     const command = new PutObjectCommand({
         Bucket: 'schemaspeak-docs' , 
@@ -56,4 +66,4 @@ const getDownloadUrl = async(file) => {
     return url
 }
 
-module.exports = { getDocContent , uploadDocContent , updateDocConfig , getDocConfig , getDownloadUrl}
+module.exports = { getDocContent , getDocBuffer , uploadDocContent , updateDocConfig , getDocConfig , getDownloadUrl}
