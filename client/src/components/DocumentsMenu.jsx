@@ -1,4 +1,5 @@
 import {useState} from 'react'
+import {useNavigate} from 'react-router'
 import {Menu , Button , Image} from '@mantine/core'
 import AddDocumentModal from './AddDocumentModal';
 import uploadIcon from '../assets/cloud-arrow-up.svg'
@@ -7,6 +8,7 @@ import binocularsIcon from '../assets/binoculars.svg'
 
 function DocumentsMenu({setDocModalShown , setCreateDocShown}){
 
+    const navigate = useNavigate()
 
     return(
         
@@ -31,7 +33,7 @@ function DocumentsMenu({setDocModalShown , setCreateDocShown}){
                     </div>
                 </Menu.Item>
                 <Menu.Item>
-                    <div style={{display: 'flex' , justifyContent: 'space-between' , alignItems: 'center' , gap: '1rem'}}>
+                    <div style={{display: 'flex' , justifyContent: 'space-between' , alignItems: 'center' , gap: '1rem'}} onClick={()=>navigate('/documents/list')}>
                         <Image src={binocularsIcon} h={16} w={'auto'}/>
                         <span>Search</span>
                     </div>
