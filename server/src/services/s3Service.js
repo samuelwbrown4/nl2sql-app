@@ -34,4 +34,15 @@ const updateDocConfig = async (config) => {
     await s3Client.send(command)
 }
 
-module.exports = { getDocContent , uploadDocContent , updateDocConfig}
+const getDocConfig = async () => {
+    const command = new GetObjectCommand({
+        Bucket: 'schemaspeak-docs',
+        Key: 'docConfig.json',
+        ContentType: 'application/json'
+    })
+    const response = await s3Client.send(command)
+    const content = await response.Body.transformToString()
+    return content
+}
+
+module.exports = { getDocContent , uploadDocContent , updateDocConfig , getDocConfig}

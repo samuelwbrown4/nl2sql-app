@@ -135,7 +135,7 @@ body {
 
 .mantine-Switch-thumb{
       background-color: #fcfcfc !important;
-    border-color: #ff69b4 !important;
+    border-color: #e64980 !important;
 }
 
 .mantine-LoadingOverlay-overlay{
@@ -152,4 +152,24 @@ body {
 
 .mantine-Pill-remove:hover {
   background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.mantine-Menu-dropdown{
+  background-color: #16171d00;
+  border-color: #e64980;
+  color: #fcfcfc
+}
+
+.mantine-Menu-item{
+  color: #fcfcfc
+}
+
+.mantine-Menu-item:hover{
+  color: #fcfcfc;
+  background-color: #3a3d4e;
+}
+
+.mantine-Drawer-body{
+  padding-left: 0;
+  padding-right: 0;
 }

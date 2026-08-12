@@ -1,6 +1,9 @@
 import {useState} from 'react'
-import {Menu , Button} from '@mantine/core'
+import {Menu , Button , Image} from '@mantine/core'
 import AddDocumentModal from './AddDocumentModal';
+import uploadIcon from '../assets/cloud-arrow-up.svg'
+import createFileIcon from '../assets/file-plus.svg'
+import binocularsIcon from '../assets/binoculars.svg'
 
 function DocumentsMenu({setDocModalShown , setCreateDocShown}){
 
@@ -10,13 +13,29 @@ function DocumentsMenu({setDocModalShown , setCreateDocShown}){
         <Menu>
             
             <Menu.Target>
-                <Button variant='gradient' gradient={{ from: 'pink', to: 'violet', deg: 90 }} >Documents</Button>
+                <Button variant='outline' color='pink' >Documents</Button>
             </Menu.Target>
 
             <Menu.Dropdown>
-                <Menu.Item onClick={()=>setDocModalShown(true)}>Upload Document</Menu.Item>
-                <Menu.Item onClick={()=>setCreateDocShown(true)}>Create Document</Menu.Item>
-                <Menu.Item>Search Documents</Menu.Item>
+                <Menu.Item onClick={()=>setDocModalShown(true)}>
+                    <div style={{display: 'flex' , justifyContent: 'space-between' , alignItems: 'center' , gap: '1rem'}}>
+                        <Image src={uploadIcon} h={16} w={'auto'}/>
+                        <span>Upload</span>
+                    </div>
+                    
+                </Menu.Item>
+                <Menu.Item onClick={()=>setCreateDocShown(true)}>
+                    <div style={{display: 'flex' , justifyContent: 'space-between' , alignItems: 'center' , gap: '1rem'}}>
+                        <Image src={createFileIcon} h={16} w={'auto'}/>
+                        <span>Create</span>
+                    </div>
+                </Menu.Item>
+                <Menu.Item>
+                    <div style={{display: 'flex' , justifyContent: 'space-between' , alignItems: 'center' , gap: '1rem'}}>
+                        <Image src={binocularsIcon} h={16} w={'auto'}/>
+                        <span>Search</span>
+                    </div>
+                </Menu.Item>
             </Menu.Dropdown>
         </Menu>
     )

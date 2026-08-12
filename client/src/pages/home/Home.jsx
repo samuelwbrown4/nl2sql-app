@@ -48,6 +48,7 @@ function Home() {
     useEffect(() => {
         setAnswer('')
         setQueryInput('')
+        setSource(null)
     }, [sqlMode])
 
     async function submitQuery() {
@@ -129,6 +130,7 @@ function Home() {
         setQueryInput(query.query)
         setSource(query.source)
         setSqlMode(query.sqlMode)
+        setFavoritesShown(false)
     }
 
     return (
@@ -142,7 +144,7 @@ function Home() {
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <Button variant='outline' color='pink' onClick={() => handleShowFavoritesClick()}>Favorites</Button>
 
-                        <Drawer opened={favoritesShown} onClose={() => setFavoritesShown(false)} orientation='horizontal' title='Favorites' >
+                        <Drawer opened={favoritesShown} onClose={() => setFavoritesShown(false)} orientation='horizontal' title='Favorites' size='xs' >
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 {favoritesList.map(q => (
                                     <div className={styles.favoriteDiv} key={q.id} onClick={() => handleSelectFavorite(q.id)}>
@@ -213,14 +215,15 @@ function Home() {
                                     value={source}
                                     onChange={(value) => setSource(value)}
                                     w={'auto'}
-                                    placeholder="Select Source" />
+                                    placeholder="Select Source"
+                                    disabled={!sqlMode} />
                             </div>
                             <div style={{ width: '65%' }}>
                                 <Input size='lg' styles={{ input: { width: '100%', backgroundColor: '#333', borderColor: 'rgb(73, 80, 87)', color: 'white', borderRadius: '30px' }, wrapper: { width: '100%' } }} value={queryInput} onChange={(e) => setQueryInput(e.target.value)} placeholder={'Ask away...'} onKeyDown={(e) => { if (e.key === 'Enter') submitQuery() }} />
                             </div>
                             <div>
-                                <Button color='pink' size='lg' variant='gradient' gradient={{ from: 'pink', to: 'violet', deg: 90 }} style={{ borderRadius: '50px' }} onClick={() => handleStarClick()}>
-                                    <div style={{ display: 'flex', gap: '1rem' }}>
+                                <Button color='pink' size='lg' variant='gradient' gradient={{ from: 'pink', to: 'violet', deg: 90 }} style={{ borderRadius: '50px' }} className={styles.favorite} onClick={() => handleStarClick()}>
+                                    <div style={{ display: 'flex', gap: '1rem' }} >
                                         <Image src={starIcon} h={24} w={'auto'} />
 
                                     </div>
