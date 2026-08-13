@@ -24,12 +24,12 @@ const getDocBuffer = async (key) => {
     return buffer
 }
 
-const uploadDocContent = async (key , content) => {
+const uploadDocContent = async (key , content , contentType) => {
     const command = new PutObjectCommand({
         Bucket: 'schemaspeak-docs' , 
         Key: key,
         Body: content,
-        ContentType: 'text/markdown'
+        ContentType: contentType
     });
 
     await s3Client.send(command)

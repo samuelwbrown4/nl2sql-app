@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
-import { Input, Textarea, Button , TagsInput} from '@mantine/core'
+import { Input, Textarea, Button, TagsInput } from '@mantine/core'
+import DOMPurify from 'dompurify';
+import ReactMarkdown from 'react-markdown'
 import ConfirmationModal from '../../components/ConfirmationModal'
-import { uploadDoc } from '../../utils/files'
+import { publishFreeformDoc, publishDoc } from '../../utils/files'
 import styles from './SaveDoc.module.css'
 
 function SaveDocDraft() {
@@ -10,10 +12,11 @@ function SaveDocDraft() {
     const location = useLocation()
     const navigate = useNavigate()
 
-    const draft = location.state || {}
-    const auth = location.auth || {}
 
-    if (draft === {} || auth === {}) {
+
+    const { draft, auth, file } = location.state || {}
+
+    if (!draft || !auth) {
         navigate('/')
     }
 
@@ -22,13 +25,13 @@ function SaveDocDraft() {
     const [description, setDescription] = useState(draft?.description)
     const [fileContent, setFileContent] = useState(draft?.content)
     const [fileBase, setFileBase] = useState(draft?.file.split('.')[0])
-    const [fileExtension, setFileExtension] = useState(`.${draft?.file.split('.')[1]}`)
-    const [tags , setTags] = useState(draft?.tags)
-    
+    const [fileExtension, setFileExtension] = useState(`.${draft?.file.split('.').pop()}`)
+    const [tags, setTags] = useState(draft?.tags)
 
-    const [confirmationShown , setConfirmationShown] = useState(false)
 
-    function handleClearAll(){
+    const [confirmationShown, setConfirmationShown] = useState(false)
+
+    function handleClearAll() {
         setTitle('')
         setSystem('')
         setDescription('')
@@ -38,22 +41,37 @@ function SaveDocDraft() {
         setTags([])
     }
 
-    async function handleConfirmClick(){
-        if(title === '' || system === '' || description === '' || fileContent === '' || fileBase === '' || tags === [] || tags.length < 2){
-            return alert('Fill out all fields')
-        }
-        let result = await uploadDoc(title, description, `${fileBase}${fileExtension}`, tags, system , fileContent , auth)
+    async function handleConfirmClick() {
+        if (file) {
+            if (title === '' || system === '' || description === '' || fileBase === '' || tags === [] || tags.length < 2) {
+                return alert('Fill out all fields')
+            }
 
-        if(result.message && result.message.includes('Successfully')){
-            navigate('/')
-        }else{
-            return alert(result.error)
+            let result = await publishDoc(file, title, description, `${fileBase}${fileExtension}`, tags, system, auth)
+
+            if (result.message && result.message.includes('Successfully')) {
+                navigate('/')
+            } else {
+                return alert(result.error)
+            }
+        } else {
+            if (title === '' || system === '' || description === '' || fileContent === '' || fileBase === '' || tags === [] || tags.length < 2) {
+                return alert('Fill out all fields')
+            }
+            let result = await publishFreeformDoc(title, description, `${fileBase}${fileExtension}`, tags, system, fileContent, auth)
+
+            if (result.message && result.message.includes('Successfully')) {
+                navigate('/')
+            } else {
+                return alert(result.error)
+            }
         }
+
     }
 
     return (
         <div className={styles.root}>
-            <ConfirmationModal open={confirmationShown} setOpen={setConfirmationShown}/>
+            <ConfirmationModal open={confirmationShown} setOpen={setConfirmationShown} />
             <h2>Review Document</h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', width: '100%' }}>
                 <div className={styles.inputDiv}>
@@ -70,7 +88,7 @@ function SaveDocDraft() {
                 </div>
                 <div className={styles.inputDiv}>
                     <span className={styles.span}>Tags:</span>
-                    <TagsInput   value={tags} onChange={setTags} placeholder='Add tags...' />
+                    <TagsInput value={tags} onChange={setTags} placeholder='Add tags...' />
                 </div>
                 <div className={styles.inputDiv} style={{ gridColumn: '1 / 3' }}>
                     <span className={styles.span}>Description:</span>
@@ -79,15 +97,21 @@ function SaveDocDraft() {
             </div>
 
 
-            <div style={{ width: '100%', height: '40vh' , gap: '.5rem' , display: 'flex' , flexDirection: 'column' }}>
+            <div style={{ width: '100%', height: '40vh', gap: '.5rem', display: 'flex', flexDirection: 'column' }}>
                 <span className={styles.span}>File Content: </span>
-                <Textarea styles={{ input: { height: '35vh' } }} value={fileContent} onChange={(e) => setFileContent(e.target.value)} />
+                {!file && <Textarea styles={{ input: { height: '35vh' } }} value={fileContent} onChange={(e) => setFileContent(e.target.value)} />}
+                {file && draft.name.split('.').pop() === 'docx' &&
+                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(draft.previewHtml) }} />
+                }
+                {file && (draft.name.split('.').pop() === 'md' || draft.name.split('.').pop() === 'txt') &&
+                    <ReactMarkdown>{draft.extractedText}</ReactMarkdown>
+                }
             </div>
 
-            <div style={{display: 'flex' , gap: '3rem'}}>
-                <Button variant='outline' color='red' onClick={()=>setConfirmationShown(true)}>Abandon</Button>
-                <Button variant='outline' onClick={()=>handleClearAll()}>Clear All</Button>
-                <Button variant='outline' color='green' onClick={()=>handleConfirmClick()}>Looks Good</Button>
+            <div style={{ display: 'flex', gap: '3rem' }}>
+                <Button variant='outline' color='red' onClick={() => setConfirmationShown(true)}>Abandon</Button>
+                <Button variant='outline' onClick={() => handleClearAll()}>Clear All</Button>
+                <Button variant='outline' color='green' onClick={() => handleConfirmClick()}>Looks Good</Button>
             </div>
         </div>
     )

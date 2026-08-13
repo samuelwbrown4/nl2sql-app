@@ -14,10 +14,10 @@ function AddDocumentModal({docModalShown, setDocModalShown , auth}) {
     const navigate = useNavigate()
 
     useEffect(()=> {
-        if(draft === null){
+        if(draft === null && file){
             return
         }else{
-            navigate('/document-create' , {state : draft , auth: auth})
+            navigate('/document-create' , {state : {draft , auth , file}})
         }
     },[draft])
 

@@ -108,6 +108,38 @@ const buildDocDraftQuery = async (title , system , content) => {
     }
 }
 
+const buildDocMetadataQuery = async (title , system , extractedText) => {
+    try{
+        let prompt = await buildCreateDocMetadataPrompt(title , system , extractedText)
+
+                let response = await fetch('https://api.anthropic.com/v1/messages' , {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.ANTHROPIC_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+                model: 'claude-haiku-4-5-20251001',
+                max_tokens: 1000,
+                temperature: 0,
+                messages: [
+                    { role: 'user', content: prompt }
+                ]
+            })
+        });
+
+        let result = await response.json()
+
+        let metadata = JSON.parse(stripJson(result.content[0].text))
+
+        return metadata
+    }catch(error){
+        console.log(error)
+        throw error
+    }
+}
+
 
 const buildPrompt = (source, query) => {
     return `Take the following schema and query and return raw SQL that would execute the query. Return only SELECT statements, return only raw SQL, while paying attention to exact enum values, with no preamble or leading or trailing text. Be mindful of any conditions expressed in a table to determine proper SQL and do not use lazy aliases. Be intentional and descriptive in your aliasing of tables. When a question asks for human-readable information (such as names, addresses, or statuses), you MUST join to the relevant table and return the resolved value — never return a raw foreign key ID in place of the readable value it points to. Only ask for clarification when the question is genuinely ambiguous about what data is being requested, not when it simply requires a join or conditional logic to resolve. Pay attention to known pitfalls, and avoid those pitfalls. If the query is ambiguous, return a response fitting the format 'CLARIFICATION_NEEDED: <a short question asking the user what they meant>. SCHEMA: ${JSON.stringify(source)} , QUERY: ${query}`
@@ -130,6 +162,16 @@ const buildCreateDocPrompt = (title , system , content) => {
       "description": "One sentence description of what this 'how to' document covers",
       "file": "suggested file name with markdown extension (.md). will likely be the same as or similar to the id. kebab case.",
       "content": "should be written out as a full document, including title. using the content passed to you"
+    }`
+}
+
+const buildCreateDocMetadataPrompt = (title , system , extractedText) => {
+    return `Build metadata based on the following information. Use the text to build the requested object TITLE: ${title} , SYSTEM: ${system} , TEXT: ${extractedText}. Response should be in JSON object format. {
+      "id": "<kebab-case-short-descriptive-id>",
+      "system": "<system as passed to you>",
+      "title": "<title as passed to you>",
+      "tags": "<array of one to two word, relevant tags based on the content of the text. will be used to search by later>",
+      "description": "One sentence description of what the extracted text of this 'how to' document covers",
     }`
 }
 
@@ -208,4 +250,4 @@ const synthesizeFileContent = async(content , originalQuery) => {
     }
 }
 
-module.exports = { buildQuery , requestNormalized , buildDocQuery , synthesizeFileContent , buildDocDraftQuery}
+module.exports = { buildQuery , requestNormalized , buildDocQuery , synthesizeFileContent , buildDocDraftQuery , buildDocMetadataQuery}

@@ -24,7 +24,7 @@ const createFile = async (title, system, content, auth) => {
     }
 }
 
-const uploadDoc = async (title, description, fileName, tags, system , fileContent , auth) => {
+const publishFreeformDoc = async (title, description, fileName, tags, system , fileContent , auth) => {
     const API_URL = import.meta.env.VITE_API_URL
     try {
         let response = await fetch(`${API_URL}/api/documents/create`, {
@@ -60,6 +60,30 @@ const uploadDocFile = async(file , title , system) => {
         formData.append('system' , system)
 
         let response = await fetch(`${API_URL}/api/documents/upload` , {
+            method: 'POST',
+            body: formData
+        });
+
+        let result = await response.json()
+
+        return result
+    }catch(error){
+        console.log(error)
+    }
+}
+
+const publishDoc = async(file, title, description, name, tags, system, auth) => {
+    try{
+        const API_URL = import.meta.env.VITE_API_URL
+        let formData = new FormData()
+        formData.append('title' , title)
+        formData.append('description' , description)
+        formData.append('name' , name)
+        formData.append('tags' , JSON.stringify(tags))
+        formData.append('system' , system)
+        formData.append('file' , file)
+
+        let response = await fetch(`${API_URL}/api/documents/publish` , {
             method: 'POST',
             body: formData
         });
@@ -125,4 +149,4 @@ const previewFile = async(fileName) => {
     }
 }
 
-export { createFile, uploadDoc , uploadDocFile , getAllFiles , downloadFile , previewFile}
+export { createFile, publishFreeformDoc , uploadDocFile , getAllFiles , downloadFile , previewFile , publishDoc}
