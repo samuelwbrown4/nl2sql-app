@@ -130,7 +130,7 @@ const publishDocService = async (req, res) => {
         await uploadDocContent(name, req.file.buffer, contentType)
 
         const configFile = await getDocConfig()
-        const config = JSON.parse(configFile).docs
+        const config = JSON.parse(configFile)
 
         config.docs.push({
             id: id,

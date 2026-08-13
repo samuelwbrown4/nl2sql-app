@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { Input, Textarea, Button, TagsInput } from '@mantine/core'
 import DOMPurify from 'dompurify';
@@ -16,16 +16,19 @@ function SaveDocDraft() {
 
     const { draft, auth, file } = location.state || {}
 
-    if (!draft || !auth) {
-        navigate('/')
-    }
+    useEffect(() => {
+        if (!draft || !auth) {
+            navigate('/')
+        }
+    }, [draft, auth, navigate])
+
 
     const [title, setTitle] = useState(draft?.title)
     const [system, setSystem] = useState(draft?.system)
     const [description, setDescription] = useState(draft?.description)
     const [fileContent, setFileContent] = useState(draft?.content)
-    const [fileBase, setFileBase] = useState(draft?.file.split('.')[0])
-    const [fileExtension, setFileExtension] = useState(`.${draft?.file.split('.').pop()}`)
+    const [fileBase, setFileBase] = useState(draft?.file?.split('.')[0] || draft?.name?.split('.')[0])
+    const [fileExtension, setFileExtension] = useState(`.${draft?.file?.split('.').pop() || draft?.name?.split('.').pop()}`)
     const [tags, setTags] = useState(draft?.tags)
 
 
@@ -84,7 +87,7 @@ function SaveDocDraft() {
                 </div>
                 <div className={styles.inputDiv}>
                     <span className={styles.span}>File Name:</span>
-                    <Input value={fileBase} onChange={(e) => setFileBase(e.target.value)} rightSection={<span>{fileExtension}</span>} />
+                    <Input value={fileBase} onChange={(e) => setFileBase(e.target.value)} rightSection={<span style={{fontSize: '.8rem' , paddingRight: '1rem'}}>{fileExtension}</span>} />
                 </div>
                 <div className={styles.inputDiv}>
                     <span className={styles.span}>Tags:</span>
@@ -101,7 +104,7 @@ function SaveDocDraft() {
                 <span className={styles.span}>File Content: </span>
                 {!file && <Textarea styles={{ input: { height: '35vh' } }} value={fileContent} onChange={(e) => setFileContent(e.target.value)} />}
                 {file && draft.name.split('.').pop() === 'docx' &&
-                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(draft.previewHtml) }} />
+                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(draft.previewHtml) }}  style={{color: 'white' , overflowY: 'scroll'}}/>
                 }
                 {file && (draft.name.split('.').pop() === 'md' || draft.name.split('.').pop() === 'txt') &&
                     <ReactMarkdown>{draft.extractedText}</ReactMarkdown>

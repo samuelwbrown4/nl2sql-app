@@ -14,9 +14,7 @@ function AddDocumentModal({docModalShown, setDocModalShown , auth}) {
     const navigate = useNavigate()
 
     useEffect(()=> {
-        if(draft === null && file){
-            return
-        }else{
+        if(draft){
             navigate('/document-create' , {state : {draft , auth , file}})
         }
     },[draft])
