@@ -184,7 +184,8 @@ body {
   background-color: #1f2028 ;
   color: #fcfcfc;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
-  border-radius: 15px
+  border-radius: 15px;
+  min-width: 100%;
 }
 
 	.mantine-Table-th{
@@ -230,6 +231,24 @@ body {
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
 
 }
+
+.mantine-Notifications-notification{
+  background-color: #1f2028;
+  color: #fcfcfc !important;
+}
+
+
+
+.mantine-Notification-title{
+  background-color: #1f2028;
+  color: #fcfcfc !important;
+}
+
+.mantine-Notification-description {
+  color: #fcfcfc !important;
+}
+
+
 
 
 

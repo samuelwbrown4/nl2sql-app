@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { Input, Textarea, Button, TagsInput } from '@mantine/core'
+import { notifications } from '@mantine/notifications'
 import DOMPurify from 'dompurify';
 import ReactMarkdown from 'react-markdown'
 import ConfirmationModal from '../../components/ConfirmationModal'
@@ -47,26 +48,58 @@ function SaveDocDraft() {
     async function handleConfirmClick() {
         if (file) {
             if (title === '' || system === '' || description === '' || fileBase === '' || tags === [] || tags.length < 2) {
-                return alert('Fill out all fields')
+                return notifications.show({
+                    title: 'Error',
+                    message: 'Fill out all fields',
+                    color: 'red',
+                    position: 'top-center'
+                })
             }
 
             let result = await publishDoc(file, title, description, `${fileBase}${fileExtension}`, tags, system, auth)
 
             if (result.message && result.message.includes('Successfully')) {
+                notifications.show({
+                    title: 'Success',
+                    message: result.message,
+                    color: 'green',
+                    position: 'top-center'
+                })
                 navigate('/')
             } else {
-                return alert(result.error)
+                return notifications.show({
+                    title: 'Error',
+                    message: result.error,
+                    color: 'red',
+                    position: 'top-center'
+                })
             }
         } else {
             if (title === '' || system === '' || description === '' || fileContent === '' || fileBase === '' || tags === [] || tags.length < 2) {
-                return alert('Fill out all fields')
+                return notifications.show({
+                    title: 'Error',
+                    message: 'Fill out all fields',
+                    color: 'red',
+                    position: 'top-center'
+                })
             }
             let result = await publishFreeformDoc(title, description, `${fileBase}${fileExtension}`, tags, system, fileContent, auth)
 
             if (result.message && result.message.includes('Successfully')) {
+                notifications.show({
+                    title: 'Success',
+                    message: result.message,
+                    color: 'green',
+                    position: 'top-center'
+                })
                 navigate('/')
             } else {
-                return alert(result.error)
+                return notifications.show({
+                    title: 'Error',
+                    message: result.error,
+                    color: 'red',
+                    position: 'top-center'
+                })
             }
         }
 
@@ -87,7 +120,7 @@ function SaveDocDraft() {
                 </div>
                 <div className={styles.inputDiv}>
                     <span className={styles.span}>File Name:</span>
-                    <Input value={fileBase} onChange={(e) => setFileBase(e.target.value)} rightSection={<span style={{fontSize: '.8rem' , paddingRight: '1rem'}}>{fileExtension}</span>} />
+                    <Input value={fileBase} onChange={(e) => setFileBase(e.target.value)} rightSection={<span style={{ fontSize: '.8rem', paddingRight: '1rem' }}>{fileExtension}</span>} />
                 </div>
                 <div className={styles.inputDiv}>
                     <span className={styles.span}>Tags:</span>
@@ -104,7 +137,7 @@ function SaveDocDraft() {
                 <span className={styles.span}>File Content: </span>
                 {!file && <Textarea styles={{ input: { height: '35vh' } }} value={fileContent} onChange={(e) => setFileContent(e.target.value)} />}
                 {file && draft.name.split('.').pop() === 'docx' &&
-                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(draft.previewHtml) }}  style={{color: 'white' , overflowY: 'scroll'}}/>
+                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(draft.previewHtml) }} style={{ color: 'white', overflowY: 'scroll' }} />
                 }
                 {file && (draft.name.split('.').pop() === 'md' || draft.name.split('.').pop() === 'txt') &&
                     <ReactMarkdown>{draft.extractedText}</ReactMarkdown>

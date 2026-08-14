@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { Input, Select, Image, Button, Drawer, Switch, Loader } from '@mantine/core'
+import { Input, Select, Image, Button, Drawer, Switch, Loader} from '@mantine/core'
+import { notifications } from "@mantine/notifications";
 import SignInModal from "../../components/SignInModal";
 import AddFavoriteModal from "../../components/AddFavoriteModal.jsx";
 import AddDocumentModal from "../../components/AddDocumentModal.jsx";
@@ -58,8 +59,14 @@ function Home() {
     }, [sqlMode])
 
     async function submitQuery() {
-        if ((sqlMode && source === '') || queryInput === '') {
-            return alert('Need to select a data source and submit a query')
+        if ((sqlMode && (source === '' || !source)) || queryInput === '') {
+            
+            return notifications.show({
+                title: 'Error',
+                message: 'You must select a data source and ask a question to submit a query',
+                color: 'red',
+                position: 'top-center'
+            })
         }
         try {
             setLoading(true)
@@ -102,7 +109,13 @@ function Home() {
 
     function handleShowFavoritesClick() {
         if (!auth) {
-            return alert('You must be logged in to view favorite queries!')
+            
+            return notifications.show({
+                title: 'Error',
+                message: 'You must be logged in to view favorites!',
+                color: 'red',
+                position: 'top-center'
+            })
         }
         setFavoritesShown(true)
 
@@ -110,17 +123,34 @@ function Home() {
 
     function handleStarClick() {
         if (!auth) {
-            return alert('You must be logged in to favorite queries!')
+    
+            return notifications.show({
+                title: 'Error',
+                message: 'You must be logged in to favorite queries!',
+                color: 'red',
+                position: 'top-center'
+            })
         }
         if (queryInput === '' || (sqlMode && source === '')) {
-            return alert('You must select a source and type a query in order to save it!')
+            
+            return notifications.show({
+                title: 'Error',
+                message: 'You must select a source and type a query in order to save it!',
+                color: 'red',
+                position: 'top-center'
+            })
         }
         setFavModalShown(true)
     }
 
     async function handleFavoriteQueryClick(shortName) {
         if (!localStorage.getItem('auth')) {
-            return alert('You must be logged in to favorite queries!')
+            return notifications.show({
+                title: 'Error',
+                message: 'You must be logged in to favorite queries!',
+                color: 'red',
+                position: 'top-center'
+            })
         }
         let result = await favoriteQuery(queryInput, source, shortName, sqlMode, auth)
         if (result.favorited.id) {
@@ -140,8 +170,10 @@ function Home() {
         setFavoritesShown(false)
     }
 
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            
             <SignInModal signInPressed={signInPressed} setSignInPressed={setSignInPressed} handleSignIn={handleSignIn} email={email} password={password} setEmail={setEmail} setPassword={setPassword} />
 
             <AddFavoriteModal favModalShown={favModalShown} setFavModalShown={setFavModalShown} handleFavoriteQueryClick={handleFavoriteQueryClick} shortName={shortName} setShortName={setShortName} />

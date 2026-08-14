@@ -44,7 +44,7 @@ function DocTable({ files }) {
                         <Table.Td>{f.title}</Table.Td>
                         <Table.Td>{f.system}</Table.Td>
                         <Table.Td>{f.description}</Table.Td>
-                        <Table.Td><span className={styles.actionBtn} onClick={()=>handlePreviewClick(f.file)}>Preview</span></Table.Td>
+                        <Table.Td><span className={styles.actionBtn} onClick={()=>handlePreviewClick(f.file)}>View</span></Table.Td>
                         <Table.Td><span className={styles.actionBtn} onClick={()=>handleDownloadClick(f.file)}>Download</span></Table.Td>
                     </Table.Tr>
                 ))}

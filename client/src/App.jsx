@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router'
 import {MantineProvider} from '@mantine/core'
+import { Notifications } from '@mantine/notifications'
 import Home from './pages/home/Home'
 import SaveDocDraft from './pages/saveDoc/SaveDocDraft'
 import DocList from './pages/docList/DocList'
@@ -11,6 +12,7 @@ function App() {
 
   return (
     <MantineProvider>
+      <Notifications/>
       <BrowserRouter>
         <Routes>
           <Route path={'/'} element={<Home />} />

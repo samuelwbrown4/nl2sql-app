@@ -222,7 +222,7 @@
                 "origin_id": "IF direction_category = 'outbound' THEN join shipper_locations.id. IF direction_category = 'inbound' THEN join suppliers.id.",
                 "destination_id": "IF direction_category = 'outbound' THEN join customer_locations.id. IF direction_category = 'inbound' THEN join shipper_locations.id."
             },
-              "known_pitfalls": "A common mistake when joining origin_id/destination_id conditionally is applying the direction_category condition to the wrong branch — e.g. joining shipper_locations with 'AND direction_category = inbound' when it should be 'outbound'. Double-check that each JOIN's direction_category condition matches the mapping stated in 'conditions' above before finalizing."
+            "known_pitfalls": "A common mistake when joining origin_id/destination_id conditionally is applying the direction_category condition to the wrong branch — e.g. joining shipper_locations with 'AND direction_category = inbound' when it should be 'outbound'. Double-check that each JOIN's direction_category condition matches the mapping stated in 'conditions' above before finalizing."
         },
         "spot_bids": {
             "columns": {
@@ -328,5 +328,189 @@
                 "package_id": "rate_packages.id"
             }
         }
+    },
+    "purepath": {
+    "enums": {
+      "direction_enum": [
+        "inbound",
+        "outbound"
+      ],
+      "order_status_enum": [
+        "unplanned",
+        "planned",
+        "in_transit",
+        "delivered",
+        "cancelled"
+      ],
+      "product_type_enum": [
+        "component",
+        "finished_good"
+      ]
+    },
+    "companies": {
+      "columns": {
+        "id": "uuid",
+        "name": "varchar",
+        "address": "varchar"
+      }
+    },
+    "customers": {
+      "columns": {
+        "id": "uuid",
+        "company_id": "uuid",
+        "name": "varchar",
+        "address": "varchar",
+        "city": "varchar",
+        "state": "varchar",
+        "zip_code": "varchar",
+        "country": "varchar"
+      },
+      "excluded_columns": [
+        "tms_customer_id"
+      ],
+      "foreign_keys": {
+        "company_id": "companies.id"
+      }
+    },
+    "customer_locations": {
+      "columns": {
+        "id": "uuid",
+        "customer_id": "uuid",
+        "name": "varchar",
+        "address": "varchar",
+        "city": "varchar",
+        "state": "varchar",
+        "zip_code": "varchar",
+        "country": "varchar",
+        "latitude": "decimal",
+        "longitude": "decimal"
+      },
+      "excluded_columns": [
+        "tms_customer_location_id"
+      ],
+      "foreign_keys": {
+        "customer_id": "customers.id"
+      }
+    },
+    "suppliers": {
+      "columns": {
+        "id": "uuid",
+        "company_id": "uuid",
+        "name": "varchar",
+        "address": "varchar",
+        "city": "varchar",
+        "state": "varchar",
+        "zip_code": "varchar",
+        "country": "varchar",
+        "latitude": "decimal",
+        "longitude": "decimal"
+      },
+      "foreign_keys": {
+        "company_id": "companies.id"
+      }
+    },
+    "shipper_locations": {
+      "columns": {
+        "id": "uuid",
+        "company_id": "uuid",
+        "erp_id": "varchar",
+        "name": "varchar",
+        "address": "varchar",
+        "city": "varchar",
+        "state": "varchar",
+        "zip_code": "varchar",
+        "country": "varchar",
+        "latitude": "decimal",
+        "longitude": "decimal"
+      },
+      "foreign_keys": {
+        "company_id": "companies.id"
+      }
+    },
+    "erp_shipments": {
+      "columns": {
+        "id": "uuid",
+        "direction_category": "direction_enum",
+        "tms_shipment_number": "varchar",
+        "status": "varchar",
+        "carrier_name": "varchar",
+        "requested_pickup_date": "date",
+        "requested_delivery_date": "date",
+        "actual_pickup_date": "date",
+        "actual_delivery_date": "date",
+        "last_synced_at": "timestamp"
+      }
+    },
+    "erp_orders": {
+      "columns": {
+        "id": "uuid",
+        "direction_category": "direction_enum",
+        "company_id": "uuid",
+        "customer_id": "uuid",
+        "customer_location_id": "uuid",
+        "supplier_id": "uuid",
+        "shipper_id": "uuid",
+        "origin_id": "uuid",
+        "destination_id": "uuid",
+        "order_number": "varchar",
+        "customer_po_number": "varchar",
+        "created_at": "timestamp",
+        "requested_ship_date": "date",
+        "order_status": "order_status_enum",
+        "shipment_id": "uuid",
+        "tms_status": "varchar"
+      },
+      "foreign_keys": {
+        "company_id": "companies.id",
+        "customer_id": "customers.id",
+        "customer_location_id": "customer_locations.id",
+        "supplier_id": "suppliers.id",
+        "shipper_id": "shipper_locations.id",
+        "shipment_id": "erp_shipments.id"
+      },
+      "conditions": {
+        "origin_id": "IF direction_category = 'outbound' THEN join shipper_locations.id. IF direction_category = 'inbound' THEN join suppliers.id.",
+        "destination_id": "IF direction_category = 'outbound' THEN join customer_locations.id. IF direction_category = 'inbound' THEN join shipper_locations.id."
+      },
+      "known_pitfalls": "A common mistake when joining origin_id/destination_id conditionally is applying the direction_category condition to the wrong branch — e.g. joining shipper_locations with 'AND direction_category = inbound' when it should be 'outbound'. Double-check that each JOIN's direction_category condition matches the mapping stated in 'conditions' above before finalizing."
+    },
+    "products": {
+      "columns": {
+        "id": "uuid",
+        "company_id": "uuid",
+        "material_number": "varchar",
+        "product_type": "product_type_enum",
+        "description": "varchar",
+        "weight": "decimal",
+        "freight_class": "varchar",
+        "unit_of_measure": "varchar"
+      },
+      "foreign_keys": {
+        "company_id": "companies.id"
+      }
+    },
+    "supplier_products": {
+      "columns": {
+        "supplier_id": "uuid",
+        "product_id": "uuid"
+      },
+      "foreign_keys": {
+        "supplier_id": "suppliers.id",
+        "product_id": "products.id"
+      }
+    },
+    "order_line_items": {
+      "columns": {
+        "id": "uuid",
+        "order_id": "uuid",
+        "product_id": "uuid",
+        "quantity": "int4",
+        "total_weight_lbs": "decimal"
+      },
+      "foreign_keys": {
+        "order_id": "erp_orders.id",
+        "product_id": "products.id"
+      }
     }
+  }
 }

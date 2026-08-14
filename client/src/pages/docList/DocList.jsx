@@ -47,7 +47,7 @@ function DocList() {
     const itemsPerPage = 10
     const totalPages = Math.ceil(filteredFiles / itemsPerPage)
     const paginatedFiles = filteredFiles.slice(((activePage - 1) * itemsPerPage), (activePage * itemsPerPage))
-    const pageMessage = `Showing ${itemsPerPage * (activePage - 1) + 1} - ${Math.min(paginatedFiles.length , itemsPerPage * activePage)} of ${paginatedFiles.length}`
+    const pageMessage = `Showing ${itemsPerPage * (activePage - 1) + 1}-${Math.min(paginatedFiles.length , itemsPerPage * activePage)} of ${paginatedFiles.length}`
 
     return (
         <div className={styles.root}>
@@ -61,9 +61,9 @@ function DocList() {
                 </div>
                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                     <Button className={styles.filterBtn} onClick={() => setOpenTagFilter(true)}>
-                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center' }}>
                             <Image src={funnelIcon} h={16} w={'auto'} />
-                            <span>Filter</span>
+                            <span style={{fontWeight: 'lighter'}}>Filter</span>
                         </div>
                     </Button>
                 </div>
