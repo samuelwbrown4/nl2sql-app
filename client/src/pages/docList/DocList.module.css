@@ -18,10 +18,22 @@
 
 .actionBtn:hover{
     text-decoration: underline;
+    color: #e64980;
 }
 
 .tr:hover{
     background-color: #242630 !important;
     cursor: pointer
 }
+
+.filterBtn{
+    background-color: #1f2028;
+    color: #ccc;
+    border-color: #e64980;
+}
+
+.filterBtn:hover{
+    background-color: #7950f2;
+}
+
 

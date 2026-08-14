@@ -41,7 +41,7 @@ function DocTable({ files }) {
             <Table.Tbody>
                 {files.map(f => (
                     <Table.Tr key={f.file} className={styles.tr}>
-                        <Table.Td>{f.file}</Table.Td>
+                        <Table.Td>{f.title}</Table.Td>
                         <Table.Td>{f.system}</Table.Td>
                         <Table.Td>{f.description}</Table.Td>
                         <Table.Td><span className={styles.actionBtn} onClick={()=>handlePreviewClick(f.file)}>Preview</span></Table.Td>

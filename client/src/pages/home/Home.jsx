@@ -143,13 +143,17 @@ function Home() {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <SignInModal signInPressed={signInPressed} setSignInPressed={setSignInPressed} handleSignIn={handleSignIn} email={email} password={password} setEmail={setEmail} setPassword={setPassword} />
+
             <AddFavoriteModal favModalShown={favModalShown} setFavModalShown={setFavModalShown} handleFavoriteQueryClick={handleFavoriteQueryClick} shortName={shortName} setShortName={setShortName} />
+
             <AddDocumentModal docModalShown={docModalShown} setDocModalShown={setDocModalShown} auth={auth} />
+
             <CreateDocumentModal createDocShown={createDocShown} setCreateDocShown={setCreateDocShown} auth={auth} />
+
             <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', marginTop: '2rem', paddingRight: '2rem', paddingLeft: '2rem', gap: '2rem' }}>
                 <div style={{ display: 'flex', gap: '1rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <Button variant='outline' color='pink' onClick={() => handleShowFavoritesClick()}>Favorites</Button>
+                        <Button className={styles.btn} onClick={() => handleShowFavoritesClick()}>Favorites</Button>
 
                         <Drawer opened={favoritesShown} onClose={() => setFavoritesShown(false)} orientation='horizontal' title='Favorites' size='xs' >
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -171,7 +175,7 @@ function Home() {
 
 
                         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                            <span style={{ color: 'white' }}><b>{sqlMode ? 'SQL Mode' : 'Document Mode'}</b></span>
+                            <span style={{ color: '#ccc' , fontSize: '.8rem' }}><b>{sqlMode ? 'SQL Mode' : 'Document Mode'}</b></span>
                             <Switch checked={sqlMode} onChange={(e) => setSqlMode(e.currentTarget.checked)} color='pink' size='md' onLabel={<Image src={dbIcon} />} offLabel={<Image src={docIcon} />} withThumbIndicator={false} styles={{
                                 track: {
                                     backgroundColor: sqlMode ? undefined : '#b45fe5',
@@ -180,7 +184,7 @@ function Home() {
                             }} />
                         </div>
                         <div>
-                            <Button variant='outline' color='pink' onClick={auth ? () => handleSignOut() : () => setSignInPressed(true)}>{auth ? 'Sign Out' : 'Sign In'}</Button>
+                            <Button className={styles.btn} onClick={auth ? () => handleSignOut() : () => setSignInPressed(true)}>{auth ? 'Sign Out' : 'Sign In'}</Button>
                         </div>
                     </div>
 

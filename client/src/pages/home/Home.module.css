@@ -32,6 +32,16 @@
     border-color: #3a3d4e;
 }
 
+.btn{
+    background-color: #1f2028;
+    color: #ccc;
+    border-color: #e64980;
+}
+
+.btn:hover{
+    background-color: #7950f2;
+}
+
 
 
 

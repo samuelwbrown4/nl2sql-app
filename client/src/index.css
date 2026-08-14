@@ -138,6 +138,10 @@ body {
     border-color: #e64980 !important;
 }
 
+.mantine-Switch-thumb:hover{
+      cursor: pointer;
+}
+
 .mantine-LoadingOverlay-overlay{
   background-color: #16171d00
 }
@@ -191,5 +195,44 @@ body {
   .mantine-Table-tr{
     border-bottom: 1px solid #3a3d4e;
   }
+
+  .mantine-Pagination-control{
+    background-color: #1f2028;
+    border-color: #e64980;
+    color: #ccc;
+}
+
+.mantine-Pagination-control:hover{
+  background-color: #7950f2;
+}
+
+.mantine-TagsInput-option {
+  background-color: #1f2028;
+  color: #fcfcfc;
+}
+
+.mantine-TagsInput-option:hover{
+  background-color: #242630
+}
+
+
+.mantine-TagsInput-dropdown {
+  border-color: #3a3d4e !important;
+  border-radius: 15px !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  background-color: #1f2028;
+}
+
+.mantine-TagsInput-options{
+  border-color: #3a3d4e;
+  border-radius: 15px !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+
+}
+
+
+
+
 
   

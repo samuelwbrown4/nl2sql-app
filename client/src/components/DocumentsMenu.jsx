@@ -5,6 +5,7 @@ import AddDocumentModal from './AddDocumentModal';
 import uploadIcon from '../assets/cloud-arrow-up.svg'
 import createFileIcon from '../assets/file-plus.svg'
 import binocularsIcon from '../assets/binoculars.svg'
+import styles from '../pages/home/Home.module.css'
 
 function DocumentsMenu({setDocModalShown , setCreateDocShown}){
 
@@ -15,7 +16,7 @@ function DocumentsMenu({setDocModalShown , setCreateDocShown}){
         <Menu>
             
             <Menu.Target>
-                <Button variant='outline' color='pink'>Documents</Button>
+                <Button className={styles.btn}>Documents</Button>
             </Menu.Target>
 
             <Menu.Dropdown>
