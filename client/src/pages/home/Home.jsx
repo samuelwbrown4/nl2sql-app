@@ -254,7 +254,7 @@ function Home() {
                                         }
                                     }}
                                     size='lg'
-                                    data={['routebase']}
+                                    data={['routebase' , 'purepath']}
                                     value={source}
                                     onChange={(value) => setSource(value)}
                                     w={'auto'}
