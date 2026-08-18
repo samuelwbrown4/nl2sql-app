@@ -246,7 +246,7 @@ const requestAnalysis = async (query , sqlArray , sqlResults , notes) => {
             })
         })
 
-        let result = response.json()
+        let result = await response.json()
 
         return result.content[0].text
     }catch(error){
