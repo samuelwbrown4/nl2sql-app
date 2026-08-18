@@ -20,19 +20,20 @@ const buildQuery = async (source, query) => {
         })
 
         let result = await response.json()
-        console.log('>>>SQL RESULT' , result)
 
-        let clarificationNeeded = result.content[0].text.includes('CLARIFICATION_NEEDED') 
-        let text = clarificationNeeded ? result.content[0].text.split('CLARIFICATION_NEEDED:', 2)[1] : stripSql(result.content[0].text)
+        let object = JSON.parse(stripJson(result.content[0].text))
         
-
+        let clarificationNeeded = object.CLARIFICATION_NEEDED
+        let sql = object.SQL
+        let sqlArray = object.SEQUENTIAL_SQL
+        let notes = object.NOTES_TO_SELF
 
         return {
-            clarification_needed: clarificationNeeded,
-            message: text
+            clarificationNeeded,
+            sql,
+            sqlArray,
+            notes
         }
-
-
 
     } catch (error) {
         console.log(error)
@@ -142,7 +143,11 @@ const buildDocMetadataQuery = async (title , system , extractedText) => {
 
 
 const buildPrompt = (source, query) => {
-    return `Take the following schema and query and return raw SQL that would execute the query. Return only SELECT statements, return only raw SQL, while paying attention to exact enum values, with no preamble or leading or trailing text. Be mindful of any conditions expressed in a table to determine proper SQL and do not use lazy aliases. Be intentional and descriptive in your aliasing of tables. When a question asks for human-readable information (such as names, addresses, or statuses), you MUST join to the relevant table and return the resolved value — never return a raw foreign key ID in place of the readable value it points to. Only ask for clarification when the question is genuinely ambiguous about what data is being requested, not when it simply requires a join or conditional logic to resolve. Pay attention to known pitfalls, and avoid those pitfalls. If the query is ambiguous, return a response fitting the format 'CLARIFICATION_NEEDED: <a short question asking the user what they meant>. SCHEMA: ${JSON.stringify(source)} , QUERY: ${query}`
+    return `Take the following schema and query and return raw SQL that would execute the query. Return only SELECT statements, return only raw SQL, while paying attention to exact enum values, with no preamble or leading or trailing text. Be mindful of any conditions expressed in a table to determine proper SQL and do not use lazy aliases. Be intentional and descriptive in your aliasing of tables. When a question asks for human-readable information (such as names, addresses, or statuses), you MUST join to the relevant table and return the resolved value — never return a raw foreign key ID in place of the readable value it points to. Only ask for clarification when the question is genuinely ambiguous about what data is being requested, not when it simply requires a join or conditional logic to resolve. Return response in the format of a javascript object. If the query asks for analysis or any calculation that would require multiple SQL queries and their results, include key 'SEQUENTIAL_SQL' with array [<sql_query_1> , <sql_query_2> , <etc>] as value' as well as key 'NOTES_TO_SELF' with value <description of what you plan on calculating with the results of the queries, since the answers will feed back to you and i will be providing the notes as context>. If the query is ambiguous, include key 'CLARIFICATION_NEEDED' with value <a short question asking the user what they meant>. If the query does not require sequential operations, and can be derived from a singular SQL query, include key 'SQL' with value <sql query to be executed>. Only use SEQUENTIAL_SQL when the calculation genuinely requires combining data from logically distinct queries — for example, comparing results across two different filter conditions, or joining data that can't be expressed in a single query. Do NOT use SEQUENTIAL_SQL for simple arithmetic (percentages, ratios, differences) that can be computed from a single query's result set — return one query and let the final answer be computed from its results instead. Pay attention to known pitfalls, and avoid those pitfalls. SCHEMA: ${JSON.stringify(source)} , QUERY: ${query}`
+}
+
+const buildRequestAnalysisPrompt = (query , sqlArray , sqlResults , notes) => {
+    return `You have been previously asked the following query. To execute this query, I asked you to provide an array of SQL queries to execute sequentially. I have included the queries you wrote here, as well as the results of said queries, in the same order as the queries are given. Perform the operations you intended to resolve the original query with the results you now have. Also provided are notes from your original response to provide context for the operations you intended on performing with the results. QUERY: ${query} , SQL_ARRAY: ${sqlArray} , SQL_RESULTS: ${sqlResults} , NOTES: ${notes}`
 }
 
 const buildDocPrompt = (docs , query) => {
@@ -186,7 +191,7 @@ const stripJson = (text) => {
 }
 
 const normalizeResultPrompt = (originQuery , queryResponse) => {
-    return `This query result (${JSON.stringify(queryResponse)}) was returned as a response to the following query: ${originQuery}. Summarize the result in plain English, using context from the original query. Return response in object format with property "intro" with value of a string for the intro into the data results and property "bullets" being represented by an array with each index of the array being a string of text for that point. Give no trailing text past this object.`
+    return `This query result (${JSON.stringify(queryResponse)}) was returned as a response to the following query: ${originQuery}. If answering the question requires a calculation (a percentage, ratio, average, difference, etc.) using the values in the result, perform that calculation and state the computed answer clearly — do not just report the raw numbers if the user asked a question that implies a derived value. Summarize the result in plain English, using context from the original query. Return response in object format with property "intro" with value of a string for the intro into the data results and property "bullets" being represented by an array with each index of the array being a string of text for that point. Give no trailing text past this object.`
 }
 
 const requestNormalized = async(originQuery , queryResponse) => {
@@ -216,6 +221,34 @@ const requestNormalized = async(originQuery , queryResponse) => {
         console.log('RAW TEXT:', JSON.stringify(result.content[0].text))
 
         return JSON.parse(result.content[0].text.replace('```json\n' , '').replace('\n```' , ''))
+    }catch(error){
+        console.log(error)
+        throw error
+    }
+}
+
+const requestAnalysis = async (query , sqlArray , sqlResults , notes) => {
+    try{
+        let prompt = await buildRequestAnalysisPrompt(query , sqlArray , sqlResults , notes)
+        let response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.ANTHROPIC_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+                model: 'claude-haiku-4-5-20251001',
+                max_tokens: 1000,
+                messages: [
+                    { role: 'user', content: prompt }
+                ]
+            })
+        })
+
+        let result = response.json()
+
+        return result.content[0].text
     }catch(error){
         console.log(error)
         throw error

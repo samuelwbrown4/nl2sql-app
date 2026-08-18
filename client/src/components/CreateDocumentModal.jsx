@@ -17,7 +17,7 @@ function CreateDocumentModal({ createDocShown, setCreateDocShown, auth }) {
         if(draft === null){
             return
         }else{
-            navigate('/document-create' , {state : draft , auth: auth})
+            navigate('/document-create', { state: { draft, auth } })
         }
     },[draft])
 

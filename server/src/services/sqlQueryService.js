@@ -13,11 +13,20 @@ const sqlQueryService = async (req , res) => {
 
         const answer = await buildQuery(config[source.toLowerCase()] , query)
 
-        if(answer.clarification_needed){
-            return res.status(200).json(answer.message)
+       // return res.status(200).json(answer) 
+
+        if(answer.clarificationNeeded){
+            return res.status(200).json(answer.clarificationNeeded)
         }else{
+
+            if(answer.sqlArray){
+                console.log(answer.sqlArray)
+                let sqlResults = await executeQuery(source.toLowerCase() , answer.sqlArray)
+
+                let analysis = await requestAnalysis(query , answer.sqlArray , sqlResults , answer.notes)
+            }
             console.log('LOG PRE QUERY EXECUTION')
-            let sqlAnswer = await executeQuery(source.toLowerCase() , answer.message)
+            let sqlAnswer = await executeQuery(source.toLowerCase() , answer.sql)
 
             if(sqlAnswer.length >=10){
                 return res.status(200).json(sqlAnswer)

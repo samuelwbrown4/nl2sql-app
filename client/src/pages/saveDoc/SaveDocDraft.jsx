@@ -136,10 +136,10 @@ function SaveDocDraft() {
             <div style={{ width: '100%', height: '40vh', gap: '.5rem', display: 'flex', flexDirection: 'column' }}>
                 <span className={styles.span}>File Content: </span>
                 {!file && <Textarea styles={{ input: { height: '35vh' } }} value={fileContent} onChange={(e) => setFileContent(e.target.value)} />}
-                {file && draft.name.split('.').pop() === 'docx' &&
+                {file && draft?.name.split('.').pop() === 'docx' &&
                     <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(draft.previewHtml) }} style={{ color: 'white', overflowY: 'scroll' }} />
                 }
-                {file && (draft.name.split('.').pop() === 'md' || draft.name.split('.').pop() === 'txt') &&
+                {file && (draft?.name.split('.').pop() === 'md' || draft?.name.split('.').pop() === 'txt') &&
                     <ReactMarkdown>{draft.extractedText}</ReactMarkdown>
                 }
             </div>
