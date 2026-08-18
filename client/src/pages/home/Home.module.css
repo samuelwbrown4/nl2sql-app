@@ -42,6 +42,23 @@
     background-color: #7950f2;
 }
 
+.markdownContent table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1rem 0;
+}
+
+.markdownContent th,
+.markdownContent td {
+    border: 1px solid rgb(73, 80, 87);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+}
+
+.markdownContent th {
+    background-color: #333;
+}
+
 
 
 

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Input, Select, Image, Button, Drawer, Switch, Loader} from '@mantine/core'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import { notifications } from "@mantine/notifications";
 import SignInModal from "../../components/SignInModal";
 import AddFavoriteModal from "../../components/AddFavoriteModal.jsx";
@@ -295,8 +296,8 @@ function Home() {
                             </ol>
                         }
                         {!answer.intro && !answer.bullets && 
-                        <div style={{color: '#fcfcfc' , textAlign: 'left'}}>
-                            <ReactMarkdown>{answer}</ReactMarkdown>
+                        <div className={styles.markdownContent} style={{color: '#fcfcfc' , textAlign: 'left'}}>
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{answer}</ReactMarkdown>
                         </div>
                         }
                     </div>}
