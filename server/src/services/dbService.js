@@ -8,7 +8,7 @@ const executeQuery = async(source , query) => {
         }
         if(Array.isArray(query)){
             let results = []
-            for(i = 0 ; i < query.length ; i++){
+            for(let i = 0 ; i < query.length ; i++){
                 let res = await pools[source].query(query[i])
 
                 results.push(res.rows)
