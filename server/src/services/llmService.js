@@ -147,7 +147,7 @@ const buildPrompt = (source, query) => {
 }
 
 const buildRequestAnalysisPrompt = (query , sqlArray , sqlResults , notes) => {
-    return `You have been previously asked the following query. To execute this query, I asked you to provide an array of SQL queries to execute sequentially. I have included the queries you wrote here, as well as the results of said queries, in the same order as the queries are given. Perform the operations you intended to resolve the original query with the results you now have. Also provided are notes from your original response to provide context for the operations you intended on performing with the results. QUERY: ${query} , SQL_ARRAY: ${sqlArray} , SQL_RESULTS: ${sqlResults} , NOTES: ${notes}`
+    return `You have been previously asked the following query. To execute this query, I asked you to provide an array of SQL queries to execute sequentially. I have included the queries you wrote here, as well as the results of said queries, in the same order as the queries are given. Perform the operations you intended to resolve the original query with the results you now have. Also provided are notes from your original response to provide context for the operations you intended on performing with the results. QUERY: ${query} , SQL_ARRAY: ${JSON.stringify(sqlArray)} , SQL_RESULTS: ${JSON.stringify(sqlResults)} , NOTES: ${notes}`
 }
 
 const buildDocPrompt = (docs , query) => {
