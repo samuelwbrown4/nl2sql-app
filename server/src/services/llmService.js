@@ -283,4 +283,4 @@ const synthesizeFileContent = async(content , originalQuery) => {
     }
 }
 
-module.exports = { buildQuery , requestNormalized , buildDocQuery , synthesizeFileContent , buildDocDraftQuery , buildDocMetadataQuery}
+module.exports = { buildQuery , requestNormalized , requestAnalysis , buildDocQuery , synthesizeFileContent , buildDocDraftQuery , buildDocMetadataQuery}

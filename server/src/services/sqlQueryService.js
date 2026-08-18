@@ -1,6 +1,6 @@
 const config = require('../config/schemaConfig.json')
 
-const {buildQuery , requestNormalized} = require('../services/llmService')
+const {buildQuery , requestNormalized , requestAnalysis} = require('../services/llmService')
 const {executeQuery} = require('../services/dbService')
 
 const sqlQueryService = async (req , res) => {
