@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Input, Select, Image, Button, Drawer, Switch, Loader} from '@mantine/core'
+import ReactMarkdown from 'react-markdown'
 import { notifications } from "@mantine/notifications";
 import SignInModal from "../../components/SignInModal";
 import AddFavoriteModal from "../../components/AddFavoriteModal.jsx";
@@ -277,8 +278,8 @@ function Home() {
                 </div>
                 {loading ? <div style={{ flex: 1 }}><Loader color='pink' /></div> :
                     <div style={{ flex: 1, overflowY: 'scroll', maxHeight: '30vh', width: '70%', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-                        <p style={{ color: 'white', fontSize: '1.2rem' }}><b>{answer.intro}</b></p>
-                        {!answer.intro && <p style={{ color: 'white', fontSize: '1rem' }}><b>{answer}</b></p>}
+                        {answer.intro && <p style={{ color: 'white', fontSize: '1.2rem' }}><b>{answer.intro}</b></p>}
+                        
                         {answer.bullets && sqlMode &&
                             <ul style={{ color: 'white' }}>
                                 {answer.bullets.map(bullet =>
@@ -292,6 +293,11 @@ function Home() {
                                     <li style={{ textAlign: 'left' }}>{bullet}</li>
                                 )}
                             </ol>
+                        }
+                        {!answer.intro && !answer.bullets && 
+                        <div style={{color: '#fcfcfc' , textAlign: 'left'}}>
+                            <ReactMarkdown>{answer}</ReactMarkdown>
+                        </div>
                         }
                     </div>}
             </div>
